@@ -2,8 +2,8 @@ name = "sumurbor-oauth"
 main = "worker.js"
 compatibility_date = "2026-05-01"
 
-# Route untuk subdomain oauth.sumurbor.rofimain.com
-# Aktifkan setelah subdomain ditambahkan di Cloudflare DNS (CNAME ke <worker>.workers.dev)
+# Route untuk subdomain oauth-sumurbor.rofimain.com
+# Aktifkan setelah subdomain ditambahkan di Cloudflare via Custom Domains
 # routes = [
-#   { pattern = "oauth.sumurbor.rofimain.com/*", zone_name = "rofimain.com" }
+#   { pattern = "oauth-sumurbor.rofimain.com/*", zone_name = "rofimain.com" }
 # ]

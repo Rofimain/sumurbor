@@ -14,24 +14,35 @@
  *
  * GitHub OAuth App settings:
  *   - Homepage URL:           https://sumurbor.rofimain.com
- *   - Authorization callback: https://oauth.sumurbor.rofimain.com/callback
+ *   - Authorization callback: https://oauth-sumurbor.rofimain.com/callback
  */
 
 const HTML_CALLBACK = (payload) => `<!doctype html>
-<html><head><meta charset="utf-8" /><title>Authorizing…</title></head>
-<body><script>
+<html><head><meta charset="utf-8" /><title>Authorizing…</title>
+<style>
+  body { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #334155;
+         display: grid; place-items: center; min-height: 100vh; margin: 0; }
+  .box { text-align: center; max-width: 380px; padding: 24px; }
+  .ok { color: #16a34a; font-weight: 600; }
+</style></head>
+<body><div class="box">
+<p class="ok">Authorized</p>
+<p>This window should close automatically. If not, you may close it manually.</p>
+</div>
+<script>
   (function () {
+    var payload = ${JSON.stringify(payload)};
     function sendMessage(status, content) {
       var msg = "authorization:github:" + status + ":" + JSON.stringify(content);
       window.opener && window.opener.postMessage(msg, "*");
     }
     window.addEventListener("message", function (e) {
-      if (e.data === "authorizing:github") sendMessage("success", ${JSON.stringify(payload)});
+      if (e.data === "authorizing:github") sendMessage("success", payload);
     }, false);
-    sendMessage("success", ${JSON.stringify(payload)});
+    sendMessage("success", payload);
+    setTimeout(function () { try { window.close(); } catch (e) {} }, 800);
   })();
 </script>
-<p>Authorizing… you may close this window.</p>
 </body></html>`;
 
 export default {

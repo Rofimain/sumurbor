@@ -128,7 +128,7 @@ Lihat panduan lengkap di [`infra/cloudflare-oauth-worker/README.md`](./infra/clo
 Ringkasnya:
 1. Buat GitHub OAuth App
 2. Deploy Cloudflare Worker (`wrangler deploy`)
-3. Pasang subdomain `oauth.sumurbor.rofimain.com`
+3. Pasang subdomain `oauth-sumurbor.rofimain.com` (single-level, pakai hyphen)
 4. Buka `/admin` → login → mulai edit konten
 
 ---
