@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 15 23 42;
+    --muted: 100 116 139;
+    --border: 226 232 240;
+
+    --brand-50: 240 248 255;
+    --brand-100: 224 241 254;
+    --brand-200: 186 227 253;
+    --brand-300: 125 207 252;
+    --brand-400: 56 182 248;
+    --brand-500: 14 165 233;
+    --brand-600: 2 132 199;
+    --brand-700: 3 105 161;
+    --brand-800: 7 89 133;
+    --brand-900: 12 74 110;
+
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-display: var(--font-sans);
+  }
+
+  * {
+    border-color: rgb(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-family: var(--font-sans);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-primary {
+    @apply btn bg-brand-500 text-white hover:bg-brand-600;
+  }
+  .btn-secondary {
+    @apply btn bg-slate-100 text-slate-900 hover:bg-slate-200;
+  }
+  .btn-outline {
+    @apply btn border border-slate-300 text-slate-900 hover:bg-slate-50;
+  }
+  .btn-whatsapp {
+    @apply btn bg-[#25D366] text-white hover:bg-[#1ebe5b];
+  }
+
+  .container-prose {
+    @apply mx-auto max-w-3xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .prose-content {
+    @apply max-w-none leading-relaxed text-slate-700;
+  }
+
+  .prose-content :where(h2) {
+    @apply mt-10 mb-3 text-2xl font-semibold tracking-tight;
+  }
+  .prose-content :where(h3) {
+    @apply mt-8 mb-2 text-xl font-semibold tracking-tight;
+  }
+  .prose-content :where(p) {
+    @apply my-4 text-slate-700;
+  }
+  .prose-content :where(ul) {
+    @apply my-4 list-disc pl-6 space-y-1 text-slate-700;
+  }
+  .prose-content :where(ol) {
+    @apply my-4 list-decimal pl-6 space-y-1 text-slate-700;
+  }
+  .prose-content :where(a) {
+    @apply text-brand-600 underline-offset-4 hover:underline;
+  }
+  .prose-content :where(blockquote) {
+    @apply my-6 border-l-4 border-brand-500 pl-4 italic text-slate-600;
+  }
+  .prose-content :where(img) {
+    @apply my-6 rounded-xl;
+  }
+  .prose-content :where(code) {
+    @apply rounded bg-slate-100 px-1.5 py-0.5 text-sm;
+  }
+}

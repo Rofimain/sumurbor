@@ -1,0 +1,7 @@
+/blog/*           /id/artikel/:splat        301
+/article/*        /id/artikel/:splat        301
+/services/*       /id/layanan/:splat        301
+/project/*        /id/proyek/:splat         301
+/about            /id/tentang               301
+/contact          /id/kontak                301
+/index.html       /                         301

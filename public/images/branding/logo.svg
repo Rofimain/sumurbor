@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 56" role="img" aria-label="Rofimain Drilling">
+  <g>
+    <rect x="2" y="8" width="40" height="40" rx="10" fill="#0ea5e9"/>
+    <path d="M22 16 L22 32 M16 24 L22 32 L28 24 M14 40 H30" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="54" y="28" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="18" font-weight="700" fill="#0f172a">Rofimain</text>
+  <text x="54" y="46" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif" font-size="12" font-weight="500" letter-spacing="2" fill="#64748b">DRILLING</text>
+</svg>
