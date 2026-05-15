@@ -223,7 +223,7 @@ collections:
         name: gallery
         widget: list
         required: false
-        i18n: duplicate
+        i18n: true
         field: { name: image, label: "Gambar", widget: image }
       - { label: "Ringkasan", name: summary, widget: text, i18n: true }
       - { label: "Detail Proyek", name: body, widget: markdown, i18n: true }
