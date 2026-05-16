@@ -38,47 +38,45 @@ export function Navbar({ settings }: NavbarProps) {
             <img
               src={settings.logo}
               alt={settings.brandName}
-              className="h-11 w-auto max-w-[200px] object-contain transition-transform duration-300 group-hover:scale-[1.03] sm:h-12"
+              className="h-11 w-11 shrink-0 rounded-xl object-contain transition-transform duration-300 group-hover:scale-[1.03] sm:h-12 sm:w-12"
             />
           ) : (
-            <>
-              <span
-                className="relative grid h-10 w-10 place-items-center rounded-xl text-white shadow-brand-glow transition-transform duration-300 group-hover:scale-105"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
-                }}
+            <span
+              className="relative grid h-10 w-10 place-items-center rounded-xl text-white shadow-brand-glow transition-transform duration-300 group-hover:scale-105"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
+              }}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                aria-hidden="true"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M12 2L4 7v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V7l-8-5z"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12 7v8M8 11h8"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </span>
-              <span className="flex flex-col leading-none">
-                <span className="text-base font-bold text-ink sm:text-lg">
-                  {settings.brandName}
-                </span>
-                <span className="mt-1 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
-                  Drilling Specialist
-                </span>
-              </span>
-            </>
+                <path
+                  d="M12 2L4 7v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V7l-8-5z"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M12 7v8M8 11h8"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
           )}
+          <span className="flex flex-col leading-none">
+            <span className="text-base font-bold text-ink sm:text-lg">
+              {settings.brandName}
+            </span>
+            <span className="mt-1 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
+              Drilling Specialist
+            </span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 text-sm lg:flex">

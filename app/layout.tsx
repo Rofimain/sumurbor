@@ -7,7 +7,7 @@ import { siteUrl } from "@/lib/seo";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
-import { JsonLd, organizationSchema } from "@/components/ui/JsonLd";
+import { JsonLd, organizationSchema, websiteSchema } from "@/components/ui/JsonLd";
 import { getSettings } from "@/lib/db";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,14 +19,18 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = db.description || siteConfig.description;
   const favicon = db.favicon || siteConfig.favicon || "/favicon.ico";
   const ogImage = db.og_image || siteConfig.ogImage;
+  const base = siteUrl();
+  const googleVerify = db.google_site_verification || process.env.GOOGLE_SITE_VERIFICATION;
+  const bingVerify = db.bing_site_verification || process.env.BING_SITE_VERIFICATION;
 
   return {
-    metadataBase: siteUrl() ? new URL(siteUrl()) : undefined,
+    metadataBase: base ? new URL(base) : undefined,
     title: {
       default: `${brandName} — ${tagline}`,
       template: `%s · ${brandName}`,
     },
     description,
+    applicationName: brandName,
     keywords: [
       "sumur bor",
       "bored pile",
@@ -35,28 +39,59 @@ export async function generateMetadata(): Promise<Metadata> {
       "kontraktor pondasi",
       "strauss pile",
       "geoteknik",
+      "jasa pondasi",
+      "jasa pengeboran",
       "Jakarta",
       brandName,
     ],
     authors: [{ name: brandName }],
     creator: brandName,
+    publisher: brandName,
+    alternates: {
+      canonical: base || undefined,
+      languages: base ? { "id-ID": base, "x-default": base } : undefined,
+    },
     openGraph: {
       type: "website",
       locale: "id_ID",
-      url: siteConfig.siteUrl,
+      url: base || siteConfig.siteUrl,
       title: `${brandName} — ${tagline}`,
       description,
       siteName: brandName,
-      images: ogImage ? [{ url: ogImage }] : undefined,
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630, alt: brandName }] : undefined,
     },
     twitter: {
       card: "summary_large_image",
-      title: brandName,
+      title: `${brandName} — ${tagline}`,
       description,
       images: ogImage ? [ogImage] : undefined,
     },
-    robots: { index: true, follow: true },
-    icons: { icon: favicon, apple: favicon },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+    icons: {
+      icon: favicon,
+      shortcut: favicon,
+      apple: favicon,
+    },
+    formatDetection: { telephone: true, email: true, address: true },
+    verification: {
+      google: googleVerify,
+      other: bingVerify ? { "msvalidate.01": bingVerify } : undefined,
+    },
+    other: {
+      "geo.region": "ID-JK",
+      "geo.country": "ID",
+      "geo.placename": db.city || siteConfig.address.city,
+    },
   };
 }
 
@@ -82,10 +117,14 @@ const spaceMono = Space_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#0EA5E9" },
+  ],
   colorScheme: "light",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
 };
 
 export default async function RootLayout({
@@ -134,7 +173,20 @@ export default async function RootLayout({
       className={`${playfair.variable} ${dmSans.variable} ${spaceMono.variable}`}
     >
       <body>
-        {!isAdmin && <JsonLd data={organizationSchema(settings)} />}
+        {!isAdmin && (
+          <JsonLd
+            data={[
+              organizationSchema({
+                ...settings,
+                url: siteUrl(),
+                logo: settings.logo || undefined,
+              }),
+              ...(siteUrl()
+                ? [websiteSchema({ brandName: settings.brandName, url: siteUrl() })]
+                : []),
+            ]}
+          />
+        )}
         {!isAdmin && <Navbar settings={settings} />}
         <main className={isAdmin ? "" : "min-h-screen"}>{children}</main>
         {!isAdmin && <Footer settings={settings} />}

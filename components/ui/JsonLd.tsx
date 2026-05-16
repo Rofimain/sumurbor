@@ -30,7 +30,7 @@ export interface OrganizationSettings {
   foundingYear?: string;
 }
 
-export function organizationSchema(settings: OrganizationSettings) {
+export function organizationSchema(settings: OrganizationSettings & { url?: string; logo?: string }) {
   const sameAs = [
     settings.instagram,
     settings.facebook,
@@ -42,8 +42,12 @@ export function organizationSchema(settings: OrganizationSettings) {
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
+    "@id": settings.url ? `${settings.url}#organization` : undefined,
     name: settings.brandName,
     description: settings.description,
+    url: settings.url,
+    logo: settings.logo,
+    image: settings.logo,
     telephone: settings.phone,
     email: settings.email,
     address: {
@@ -56,7 +60,32 @@ export function organizationSchema(settings: OrganizationSettings) {
     },
     foundingDate: settings.foundingYear,
     sameAs: sameAs.length ? sameAs : undefined,
-    openingHours: "Mo-Sa 08:00-17:00",
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        opens: "08:00",
+        closes: "17:00",
+      },
+    ],
+    priceRange: "$$",
+  };
+}
+
+export function websiteSchema(settings: { brandName: string; url: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${settings.url}#website`,
+    url: settings.url,
+    name: settings.brandName,
+    publisher: { "@id": `${settings.url}#organization` },
+    inLanguage: "id-ID",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${settings.url}/artikel?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
 }
 
