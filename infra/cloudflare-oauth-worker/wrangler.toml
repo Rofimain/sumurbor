@@ -1,9 +1,0 @@
-name = "sumurbor-oauth"
-main = "worker.js"
-compatibility_date = "2026-05-01"
-
-# Custom Domain — wrangler auto-creates DNS record + SSL cert.
-# Pattern tanpa wildcard/path karena custom_domain bukan route biasa.
-routes = [
-  { pattern = "oauth-sumurbor.rofimain.com", zone_name = "rofimain.com", custom_domain = true }
-]

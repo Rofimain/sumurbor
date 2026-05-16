@@ -1,224 +1,218 @@
-# Sumurbor — Rofimain Drilling
+# Rofimain Drilling — Sumur Bor & Bored Pile
 
-Website company profile untuk jasa sumur bor & pondasi bor pile, dibangun dengan
-Next.js 15 (static export), Tailwind CSS, dan Decap CMS untuk panel admin.
-Deploy gratis di Cloudflare Pages, sumber kode di GitHub.
+Website company profile premium dengan custom CMS, dibuat untuk **deploy ke Cloudflare Workers** + **Supabase** sebagai database & media storage.
 
-**Live**: https://sumurbor.rofimain.com
-**Admin**: https://sumurbor.rofimain.com/admin
-**Repo**: https://github.com/Rofimain/sumurbor
+> **Stack:** Next.js 14 (App Router) · TypeScript · Tailwind CSS · Supabase · Cloudflare Workers (via OpenNext) · Tema **putih elegan + light blue**.
 
 ---
 
 ## Fitur
 
-- Static export Next.js 15 (App Router) — hosting gratis di mana saja
-- Dual bahasa **Indonesia (ID)** dan **English (EN)** dengan hreflang
-- Konten dikelola via admin web (`/admin`) — Decap CMS dengan login GitHub
-- **Semua editable lewat admin**: logo, warna brand, nama, kontak, sosmed,
-  layanan, proyek, artikel, halaman tentang
-- SEO lengkap: meta tags, OG image, canonical, sitemap.xml, robots.txt,
-  JSON-LD (LocalBusiness, Service, Article, FAQPage, BreadcrumbList)
-- WhatsApp floating button + tombol call
-- Form kontak via Web3Forms (gratis 250 submit/bulan)
-- Cloudflare Pages: unlimited bandwidth, otomatis SSL, 100% gratis komersial
-
-## Stack
-
-| Layer | Tech |
-|---|---|
-| Framework | Next.js 15 + React 19 + TypeScript |
-| Styling | Tailwind CSS 3 |
-| Konten | Markdown + JSON (di folder `content/`) |
-| Admin CMS | Decap CMS (open source) |
-| Hosting | Cloudflare Pages |
-| OAuth proxy | Cloudflare Worker |
-| Form | Web3Forms (free tier) |
+- **Frontend public** (Indonesian-only): Beranda, Tentang, Layanan, Proyek, Artikel, Kontak.
+- **Custom admin CMS** (`/admin`) dengan JWT cookie auth — bukan Decap. Kelola layanan, proyek, artikel, tim, testimoni, media, dan pengaturan global.
+- **Image upload** ke Supabase Storage (bucket `media`).
+- **SEO end-to-end**: metadata + Open Graph + Twitter Card + dynamic `sitemap.xml` + `robots.txt` + JSON-LD (`LocalBusiness`, `Service`, `BreadcrumbList`, `Article`, `FAQPage`).
+- **Form kontak** via [Web3Forms](https://web3forms.com) (gratis), fallback ke WhatsApp jika key kosong.
+- **Floating WhatsApp button** dengan pesan pre-fill.
+- **Rate-limited login** + httpOnly secure cookie.
+- **Production-ready security headers** (CSP, HSTS, X-Frame-Options, Permissions-Policy, dll).
+- **Deploy Cloudflare Workers** via `@opennextjs/cloudflare`.
 
 ---
 
-## Setup lokal
-
-```bash
-git clone https://github.com/Rofimain/sumurbor.git
-cd sumurbor
-npm install
-npm run dev
-```
-
-Buka http://localhost:3000.
-
-### Build static
-
-```bash
-npm run build
-# output di folder ./out
-```
-
----
-
-## Struktur folder
+## Struktur
 
 ```
 .
-├── content/                    # konten (markdown + json) — DI-EDIT VIA /admin
-│   ├── articles/{id,en}/*.md
-│   ├── services/{id,en}/*.md
-│   ├── projects/{id,en}/*.md
-│   ├── about/about.json
-│   └── settings/general.json   # brand, logo, kontak, sosmed
+├── app/                     # Next.js App Router
+│   ├── (public)             # /, /tentang, /layanan, /proyek, /artikel, /kontak
+│   ├── admin/               # CMS — sidebar + CRUD pages
+│   ├── api/                 # auth, settings, services, projects, articles, team, testimonials, upload, media
+│   ├── sitemap.ts           # Dynamic sitemap
+│   └── robots.ts            # Robots
+├── components/
+│   ├── admin/               # Drawer, headers — admin shell
+│   ├── layout/              # Navbar, Footer
+│   └── ui/                  # Cards, ContactForm, ImageUploader, JsonLd, etc.
+├── data/                    # Static fallback siteConfig
+├── lib/                     # supabase, db, auth, utils, seo
 ├── public/
-│   ├── admin/                  # Decap CMS bundle + config
-│   ├── images/                 # gambar
-│   ├── _headers                # Cloudflare headers
-│   └── _redirects              # Cloudflare redirects
-├── src/
-│   ├── app/
-│   │   ├── [lang]/             # routing per-bahasa
-│   │   ├── sitemap.ts          # generate /sitemap.xml
-│   │   └── robots.ts           # generate /robots.txt
-│   ├── components/
-│   ├── i18n/                   # dictionaries id.json & en.json
-│   ├── lib/                    # content loader + seo helpers
-│   └── styles/
-├── infra/cloudflare-oauth-worker/   # OAuth proxy untuk admin login
-└── scripts/
+│   ├── _headers             # Cache-Control for static assets
+│   └── robots.txt
+├── types/                   # TypeScript interfaces
+├── middleware.ts            # JWT auth + rate limit
+├── supabase-schema.sql      # Schema + RLS + defaults
+├── supabase-seed.sql        # Sample data (optional)
+├── next.config.mjs
+├── open-next.config.ts      # OpenNext Cloudflare config
+└── wrangler.jsonc           # Workers config
 ```
 
 ---
 
-## Deployment ke Cloudflare Pages
+## 1. Setup Supabase
 
-Sekali setup, semua deploy berikutnya otomatis tiap `git push`.
+1. Buka [supabase.com](https://supabase.com) → **New Project** (Free Tier cukup).
+2. Catat dari **Settings → API**:
+   - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
+   - `anon public` key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `service_role secret` key → `SUPABASE_SERVICE_ROLE_KEY` (rahasia, **jangan commit**)
+3. Buka **SQL Editor** → tempel isi `supabase-schema.sql` → **Run**.
+4. (Opsional) Tempel `supabase-seed.sql` → Run untuk data contoh.
+5. Buka **Storage** → **Create bucket** → nama **`media`** → centang **Public**.
 
-### 1. Push ke GitHub
+---
+
+## 2. Setup lokal
 
 ```bash
-git remote add origin https://github.com/Rofimain/sumurbor.git
-git branch -M main
-git push -u origin main
+# Install deps
+npm install
+
+# Copy env template & isi
+cp .env.example .env.local
+# Edit .env.local:
+#   NEXT_PUBLIC_SUPABASE_URL=
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY=
+#   SUPABASE_SERVICE_ROLE_KEY=
+#   ADMIN_EMAIL=admin@rofimain.com
+#   ADMIN_PASSWORD=<password kuat>
+#   JWT_SECRET=<random 32+ chars, generate via: openssl rand -base64 32>
+#   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+#   NEXT_PUBLIC_WEB3FORMS_KEY=  (optional, lihat Step 4)
+
+# Dev (Node.js runtime — sama seperti Next.js biasa)
+npm run dev
+
+# Preview di runtime Workers (mirip production)
+npm run preview
 ```
 
-### 2. Connect ke Cloudflare Pages
-
-1. Buka [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages → Create → Pages → Connect to Git**
-2. Pilih repo `Rofimain/sumurbor`
-3. Build settings:
-   - **Framework preset**: `Next.js (Static HTML Export)`
-   - **Build command**: `npm run build`
-   - **Build output directory**: `out`
-   - **Root directory**: (kosong)
-   - **Environment variables**:
-     - `NODE_VERSION` = `20`
-     - `NEXT_PUBLIC_WEB3FORMS_KEY` = `<your_web3forms_access_key>` (opsional, untuk form kontak)
-4. **Save and Deploy** → tunggu ~2 menit → dapat URL `*.pages.dev`
-
-### 3. Pasang custom domain `sumurbor.rofimain.com`
-
-Asumsi domain `rofimain.com` sudah di Cloudflare:
-
-1. Pages → project → **Custom domains** → **Set up a custom domain**
-2. Masukkan `sumurbor.rofimain.com` → Cloudflare otomatis membuat CNAME
-3. Tunggu SSL provision (~1 menit) — selesai
-
-### 4. Setup admin OAuth (untuk `/admin`)
-
-Lihat panduan lengkap di [`infra/cloudflare-oauth-worker/README.md`](./infra/cloudflare-oauth-worker/README.md).
-
-Ringkasnya:
-1. Buat GitHub OAuth App
-2. Deploy Cloudflare Worker (`wrangler deploy`)
-3. Pasang subdomain `oauth-sumurbor.rofimain.com` (single-level, pakai hyphen)
-4. Buka `/admin` → login → mulai edit konten
+Buka [http://localhost:3000](http://localhost:3000) untuk public site, [http://localhost:3000/admin](http://localhost:3000/admin) untuk login admin.
 
 ---
 
-## Panduan Admin
+## 3. Deploy ke Cloudflare Workers
 
-### Cara login
+### Prasyarat
 
-1. Buka https://sumurbor.rofimain.com/admin
-2. Klik **Login with GitHub**
-3. Authorize aplikasi (pertama kali saja)
+- Akun Cloudflare (gratis).
+- `wrangler` sudah login: `npx wrangler login`.
 
-### Apa yang bisa diedit?
+### Set secrets (server-side env vars)
 
-| Collection | Fungsi |
-|---|---|
-| **Pengaturan Website → Umum** | Nama brand, logo, favicon, warna, kontak, alamat, sosmed, area layanan |
-| **Pengaturan Website → Tentang Kami** | Misi, visi, values, sertifikasi (per bahasa) |
-| **Layanan** | Tambah/edit layanan (dengan FAQ + fitur) |
-| **Artikel** | Tambah/edit artikel blog |
-| **Proyek** | Tambah/edit portofolio proyek |
+```bash
+# Set semua secrets (akan prompt nilai)
+npx wrangler secret put NEXT_PUBLIC_SUPABASE_URL
+npx wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+npx wrangler secret put ADMIN_EMAIL
+npx wrangler secret put ADMIN_PASSWORD
+npx wrangler secret put JWT_SECRET
+npx wrangler secret put NEXT_PUBLIC_SITE_URL          # https://sumurbor.rofimain.com
+npx wrangler secret put NEXT_PUBLIC_WEB3FORMS_KEY     # optional
+```
 
-### Konten dual ID/EN
+### Deploy
 
-Setiap entri (artikel, layanan, proyek) punya tab **ID** dan **EN**. Tulis di
-keduanya supaya pengunjung dari Indonesia dan luar negeri sama-sama dapat
-versi bahasa mereka.
+```bash
+npm run deploy
+```
 
-### Editorial workflow
+Wrangler akan:
+1. `next build` → kompilasi Next.js.
+2. `opennextjs-cloudflare build` → adapt untuk Workers runtime.
+3. Upload `.open-next/worker.js` + static assets ke Cloudflare.
+4. URL default: `https://sumurbor.<your-account>.workers.dev`.
 
-Decap CMS pakai mode **editorial_workflow** — setiap perubahan masuk sebagai
-draft branch PR di GitHub. Reviewer (owner) klik **Publish** di admin → otomatis
-merge ke `main` → Cloudflare Pages rebuild dalam ~90 detik.
+### Custom Domain
 
-### Mengganti logo
+1. Cloudflare Dashboard → **Workers & Pages** → pilih worker `sumurbor`.
+2. **Settings → Triggers → Custom Domains → Add Custom Domain**.
+3. Tambahkan `sumurbor.rofimain.com` — Cloudflare akan otomatis bikin DNS record + provisioning SSL.
 
-1. Login admin → **Pengaturan Website → Umum**
-2. Klik field **Logo** → upload SVG/PNG
-3. **Save** → publish → tunggu rebuild
+### Cek deployment
 
-### Mengganti warna brand
-
-1. **Pengaturan Website → Umum → Warna Brand**
-2. Pilih warna lewat color picker (atau ketik HEX langsung)
-3. **Save** → publish → semua tombol, link, dan aksen warna otomatis update
-
----
-
-## SEO
-
-Yang sudah otomatis:
-
-- `<title>` & `<meta description>` unik per halaman
-- Open Graph + Twitter Card di tiap halaman
-- `<link rel="canonical">` dan `<link rel="alternate" hreflang>` untuk dual bahasa
-- `sitemap.xml` (auto-include semua halaman + alternates)
-- `robots.txt` (allow semua, disallow `/admin`)
-- JSON-LD:
-  - `LocalBusiness` di semua halaman (footer-level data)
-  - `Service` di halaman layanan detail
-  - `Article` di halaman artikel detail
-  - `FAQPage` di halaman layanan yang punya FAQ
-  - `BreadcrumbList` di semua halaman selain home
-  - `CreativeWork` di halaman proyek detail
-- Custom 404 dengan `<meta name=robots content="noindex">`
-
-### Setelah deploy
-
-1. Daftar [Google Search Console](https://search.google.com/search-console)
-2. Verify ownership via DNS TXT (lewat Cloudflare DNS, gratis)
-3. Submit sitemap: `https://sumurbor.rofimain.com/sitemap.xml`
-4. Daftar [Bing Webmaster Tools](https://www.bing.com/webmasters) — submit sitemap juga
-5. Daftar [Google Business Profile](https://business.google.com) untuk Local SEO
+- Visit `https://sumurbor.rofimain.com` → public site.
+- Visit `https://sumurbor.rofimain.com/admin` → login dengan `ADMIN_EMAIL` + `ADMIN_PASSWORD`.
 
 ---
 
-## Form kontak (Web3Forms)
+## 4. (Opsional) Contact Form via Web3Forms
 
-Form kontak default-nya tidak aktif sampai access key diset.
+1. Daftar di [web3forms.com](https://web3forms.com) (gratis, no signup needed for basic).
+2. Generate access key untuk email tujuan kamu.
+3. Set sebagai env var:
+   ```bash
+   npx wrangler secret put NEXT_PUBLIC_WEB3FORMS_KEY
+   ```
+   atau di Cloudflare dashboard: **Settings → Variables → Add variable**.
 
-1. Daftar di https://web3forms.com (gratis, hanya butuh email)
-2. Copy **Access Key**
-3. Di Cloudflare Pages → project → **Settings → Environment variables**:
-   - Variable name: `NEXT_PUBLIC_WEB3FORMS_KEY`
-   - Value: `<paste access key>`
-   - Environment: Production
-4. Trigger redeploy
+> Tanpa key: form akan otomatis fallback membuka WhatsApp dengan pesan pre-filled.
 
 ---
 
-## Lisensi
+## 5. Admin Panel
 
-Source code: MIT. Konten dan brand: © Rofimain Drilling.
+URL: `/admin/login`
+
+Fitur:
+- **Dashboard** dengan ringkasan jumlah konten per entitas.
+- **Layanan**: CRUD layanan (icon, fitur, tahapan proses, FAQ, urutan, featured).
+- **Proyek**: CRUD proyek (kategori, lokasi, spesifikasi, galeri, tag, status).
+- **Artikel**: CRUD blog post dengan markdown sederhana (`##`, `###`, `-`, `1.`, `>`).
+- **Tim**: anggota tim (nama, role, bio, foto, social).
+- **Testimoni**: testimoni klien dengan rating bintang.
+- **Media**: galeri semua file upload + copy URL.
+- **Pengaturan**: brand, kontak, sosial media.
+
+### Tambah admin lain?
+
+Saat ini single-admin via env var. Untuk multi-admin di future, ganti `lib/auth.ts` untuk lookup user dari tabel Supabase + bcrypt hash.
+
+---
+
+## 6. Customization
+
+### Ganti tema warna
+
+Edit `tailwind.config.ts` → `theme.extend.colors.brand` (palette `50`–`950`).
+Untuk warna utama, ubah CSS variable `--brand-*` di `app/globals.css`.
+
+### Ganti brand name / logo
+
+Edit `data/index.ts` (static fallback) atau langsung dari `/admin/pengaturan` (override).
+Logo SVG inline di `components/layout/Navbar.tsx` dan `Footer.tsx`.
+
+### Tambah halaman baru
+
+1. Buat folder di `app/<slug>/page.tsx`.
+2. Tambah link di `components/layout/Navbar.tsx` (`NAV_ITEMS`).
+3. (Opsional) tambah ke `app/sitemap.ts` (`STATIC_PATHS`).
+
+---
+
+## 7. Security checklist (sebelum production)
+
+- [ ] `JWT_SECRET` random ≥32 char (jangan pakai default).
+- [ ] `ADMIN_PASSWORD` strong, **bukan** "admin/password/12345".
+- [ ] `SUPABASE_SERVICE_ROLE_KEY` di Cloudflare Secrets (bukan `vars`).
+- [ ] RLS aktif di semua tabel Supabase (sudah otomatis dari schema).
+- [ ] Custom domain pakai full TLS (otomatis di Cloudflare).
+- [ ] `.env.local` & `.dev.vars` di `.gitignore` (sudah).
+- [ ] Cek security headers di production: `curl -I https://sumurbor.rofimain.com | grep -i content-security`.
+
+---
+
+## 8. Maintenance
+
+- **Update deps:** `npm outdated` → `npm install <pkg>@latest`.
+- **Rotate secrets:** `npx wrangler secret put <NAME>` lalu redeploy.
+- **Backup DB:** Supabase Dashboard → Database → Backups (free tier: 7 hari).
+- **Logs:** `npx wrangler tail` untuk live logs production.
+
+---
+
+## License
+
+MIT
