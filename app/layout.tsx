@@ -10,6 +10,56 @@ import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { JsonLd, organizationSchema } from "@/components/ui/JsonLd";
 import { getSettings } from "@/lib/db";
 
+export async function generateMetadata(): Promise<Metadata> {
+  const db: Record<string, string> = await getSettings().catch(
+    () => ({}) as Record<string, string>,
+  );
+  const brandName = db.site_name || siteConfig.brandName;
+  const tagline = db.tagline || siteConfig.tagline;
+  const description = db.description || siteConfig.description;
+  const favicon = db.favicon || siteConfig.favicon || "/favicon.ico";
+  const ogImage = db.og_image || siteConfig.ogImage;
+
+  return {
+    metadataBase: siteUrl() ? new URL(siteUrl()) : undefined,
+    title: {
+      default: `${brandName} — ${tagline}`,
+      template: `%s · ${brandName}`,
+    },
+    description,
+    keywords: [
+      "sumur bor",
+      "bored pile",
+      "pondasi",
+      "kontraktor sumur bor",
+      "kontraktor pondasi",
+      "strauss pile",
+      "geoteknik",
+      "Jakarta",
+      brandName,
+    ],
+    authors: [{ name: brandName }],
+    creator: brandName,
+    openGraph: {
+      type: "website",
+      locale: "id_ID",
+      url: siteConfig.siteUrl,
+      title: `${brandName} — ${tagline}`,
+      description,
+      siteName: brandName,
+      images: ogImage ? [{ url: ogImage }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: brandName,
+      description,
+      images: ogImage ? [ogImage] : undefined,
+    },
+    robots: { index: true, follow: true },
+    icons: { icon: favicon, apple: favicon },
+  };
+}
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
@@ -30,43 +80,6 @@ const spaceMono = Space_Mono({
   display: "swap",
   weight: ["400", "700"],
 });
-
-export const metadata: Metadata = {
-  metadataBase: siteUrl() ? new URL(siteUrl()) : undefined,
-  title: {
-    default: `${siteConfig.brandName} — ${siteConfig.tagline}`,
-    template: `%s · ${siteConfig.brandName}`,
-  },
-  description: siteConfig.description,
-  keywords: [
-    "sumur bor",
-    "bored pile",
-    "pondasi",
-    "kontraktor sumur bor",
-    "kontraktor pondasi",
-    "strauss pile",
-    "geoteknik",
-    "Jakarta",
-    siteConfig.brandName,
-  ],
-  authors: [{ name: siteConfig.brandName }],
-  creator: siteConfig.brandName,
-  openGraph: {
-    type: "website",
-    locale: "id_ID",
-    url: siteConfig.siteUrl,
-    title: `${siteConfig.brandName} — ${siteConfig.tagline}`,
-    description: siteConfig.description,
-    siteName: siteConfig.brandName,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.brandName,
-    description: siteConfig.description,
-  },
-  robots: { index: true, follow: true },
-  icons: { icon: siteConfig.favicon || "/favicon.ico" },
-};
 
 export const viewport: Viewport = {
   themeColor: "#FFFFFF",
@@ -93,6 +106,8 @@ export default async function RootLayout({
     brandName: dbSettings.site_name || siteConfig.brandName,
     tagline: dbSettings.tagline || siteConfig.tagline,
     description: dbSettings.description || siteConfig.description,
+    logo: dbSettings.logo || siteConfig.logo || "",
+    logoLight: dbSettings.logo_light || siteConfig.logoLight || "",
     phone: dbSettings.phone || siteConfig.phone,
     phoneDisplay: dbSettings.phone_display || siteConfig.phoneDisplay,
     whatsapp: dbSettings.whatsapp || siteConfig.whatsapp,

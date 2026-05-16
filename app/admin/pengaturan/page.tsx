@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Loader2, Save, CheckCircle2 } from "lucide-react";
+import { Loader2, Save, CheckCircle2, ImageIcon } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { ImageUploader } from "@/components/ui/ImageUploader";
 
 const FIELDS: {
   group: string;
@@ -120,6 +121,68 @@ export default function AdminPengaturan() {
       />
 
       <div className="space-y-6">
+        {/* ─── Brand Assets ─────────────────────────── */}
+        <section className="card-elevated p-6">
+          <header>
+            <h2 className="flex items-center gap-2 font-heading text-lg font-semibold text-ink">
+              <ImageIcon className="h-4 w-4 text-brand-600" aria-hidden="true" />
+              Brand Assets
+            </h2>
+            <p className="mt-1 text-sm text-ink-muted">
+              Logo, favicon, dan gambar default untuk share di sosial media.
+            </p>
+          </header>
+          <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div>
+              <p className="field-label">Logo Utama</p>
+              <p className="mb-2 text-xs text-ink-subtle">
+                Tampil di header (sidebar putih). Disarankan PNG transparan,
+                rasio 1:1 atau landscape (≥256px).
+              </p>
+              <ImageUploader
+                folder="brand"
+                value={data.logo || ""}
+                onChange={(url) => setData({ ...data, logo: url })}
+              />
+            </div>
+            <div>
+              <p className="field-label">Logo Light (Footer)</p>
+              <p className="mb-2 text-xs text-ink-subtle">
+                Varian terang untuk footer (background gelap). Kalau kosong,
+                pakai logo utama.
+              </p>
+              <ImageUploader
+                folder="brand"
+                value={data.logo_light || ""}
+                onChange={(url) => setData({ ...data, logo_light: url })}
+              />
+            </div>
+            <div>
+              <p className="field-label">Favicon</p>
+              <p className="mb-2 text-xs text-ink-subtle">
+                Icon untuk tab browser. PNG/ICO 32×32 atau 64×64.
+              </p>
+              <ImageUploader
+                folder="brand"
+                value={data.favicon || ""}
+                onChange={(url) => setData({ ...data, favicon: url })}
+              />
+            </div>
+            <div className="sm:col-span-2 lg:col-span-3">
+              <p className="field-label">Gambar OG Default (Social Share)</p>
+              <p className="mb-2 text-xs text-ink-subtle">
+                Tampil saat link di-share di WhatsApp/IG/FB. Rasio 1200×630.
+              </p>
+              <ImageUploader
+                folder="brand"
+                value={data.og_image || ""}
+                onChange={(url) => setData({ ...data, og_image: url })}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Other field groups ───────────────────── */}
         {FIELDS.map((g) => (
           <section key={g.group} className="card-elevated p-6">
             <header>

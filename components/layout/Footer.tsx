@@ -27,6 +27,8 @@ interface FooterProps {
     facebook?: string;
     linkedin?: string;
     youtube?: string;
+    logo?: string;
+    logoLight?: string;
   };
 }
 
@@ -77,47 +79,62 @@ export function Footer({ settings }: FooterProps) {
 
       <div className="container-page relative grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12 lg:py-20">
         <div className="space-y-5 lg:col-span-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2.5 font-heading"
-            aria-label={settings.brandName}
-          >
-            <span
-              className="grid h-10 w-10 place-items-center rounded-xl text-white shadow-brand-glow"
-              style={{
-                backgroundImage:
-                  "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
-              }}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                aria-hidden="true"
+          {(() => {
+            const footerLogo = settings.logoLight || settings.logo;
+            return (
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2.5 font-heading"
+                aria-label={settings.brandName}
               >
-                <path
-                  d="M12 2L4 7v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V7l-8-5z"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M12 7v8M8 11h8"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-            <span className="flex flex-col leading-none">
-              <span className="text-base font-bold text-white sm:text-lg">
-                {settings.brandName}
-              </span>
-              <span className="mt-1 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-white/50">
-                Drilling Specialist
-              </span>
-            </span>
-          </Link>
+                {footerLogo ? (
+                  <img
+                    src={footerLogo}
+                    alt={settings.brandName}
+                    className="h-12 w-auto max-w-[220px] object-contain"
+                  />
+                ) : (
+                  <>
+                    <span
+                      className="grid h-10 w-10 place-items-center rounded-xl text-white shadow-brand-glow"
+                      style={{
+                        backgroundImage:
+                          "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
+                      }}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-5 w-5"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M12 2L4 7v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V7l-8-5z"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M12 7v8M8 11h8"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </span>
+                    <span className="flex flex-col leading-none">
+                      <span className="text-base font-bold text-white sm:text-lg">
+                        {settings.brandName}
+                      </span>
+                      <span className="mt-1 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-white/50">
+                        Drilling Specialist
+                      </span>
+                    </span>
+                  </>
+                )}
+              </Link>
+            );
+          })()}
           <p className="max-w-sm text-sm leading-relaxed text-slate-400">
             {settings.tagline}
           </p>
