@@ -72,8 +72,13 @@ export default async function ArticleDetailPage({ params }: PageProps) {
       />
 
       <article>
-        <header className="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-white py-12 lg:py-16">
-          <div className="container max-w-3xl">
+        <header className="relative overflow-hidden border-b border-slate-100">
+          <div className="absolute inset-0 bg-mesh" aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-grid opacity-30 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]"
+            aria-hidden="true"
+          />
+          <div className="container relative max-w-3xl py-14 sm:py-20">
             <Breadcrumb
               items={[
                 { label: dict.nav.home, href: `/${locale}` },
@@ -81,26 +86,35 @@ export default async function ArticleDetailPage({ params }: PageProps) {
                 { label: fm.title },
               ]}
             />
-            <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+            <span className="mt-6 inline-block eyebrow">{dict.nav.articles}</span>
+            <h1 className="mt-4 text-balance font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
               {fm.title}
             </h1>
-            <p className="mt-3 text-lg text-slate-600">{fm.excerpt}</p>
-            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500">
+            <p className="mt-5 text-pretty text-lg leading-relaxed text-slate-600">
+              {fm.excerpt}
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500">
               <span className="inline-flex items-center gap-1.5">
-                <Calendar className="h-4 w-4" aria-hidden="true" />
+                <Calendar className="h-4 w-4 text-brand-500" aria-hidden="true" />
                 {formatted}
               </span>
               {fm.author && (
-                <span className="inline-flex items-center gap-1.5">
-                  <User className="h-4 w-4" aria-hidden="true" />
-                  {fm.author}
-                </span>
+                <>
+                  <span aria-hidden="true" className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="inline-flex items-center gap-1.5">
+                    <User className="h-4 w-4 text-brand-500" aria-hidden="true" />
+                    {fm.author}
+                  </span>
+                </>
               )}
               {fm.readTime && (
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock className="h-4 w-4" aria-hidden="true" />
-                  {fm.readTime} {dict.articles.readTime}
-                </span>
+                <>
+                  <span aria-hidden="true" className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="inline-flex items-center gap-1.5">
+                    <Clock className="h-4 w-4 text-brand-500" aria-hidden="true" />
+                    {fm.readTime} {dict.articles.readTime}
+                  </span>
+                </>
               )}
             </div>
           </div>
@@ -108,18 +122,18 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
         {fm.coverImage && (
           <div className="bg-white">
-            <div className="container max-w-4xl py-8">
+            <div className="container max-w-4xl py-10">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={fm.coverImage}
                 alt={fm.title}
-                className="aspect-[16/9] w-full rounded-2xl object-cover"
+                className="aspect-[16/9] w-full rounded-3xl object-cover shadow-soft-lg"
               />
             </div>
           </div>
         )}
 
-        <section className="bg-white pb-16">
+        <section className="bg-white pb-20">
           <div
             className="container-prose prose-content"
             dangerouslySetInnerHTML={{ __html: article.html }}

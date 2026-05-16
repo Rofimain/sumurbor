@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Droplets, Construction, Drill } from "lucide-react";
+import { ArrowUpRight, Droplets, Construction, Drill } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { ServiceFrontmatter } from "@/lib/content";
 
@@ -20,18 +20,45 @@ export function ServiceCard({
   return (
     <Link
       href={`/${locale}/layanan/${service.slug}`}
-      className="group flex h-full flex-col rounded-xl border border-slate-200 bg-white p-6 transition-colors hover:border-brand-300 hover:bg-brand-50/40"
+      className="card-elevated card-hover group relative flex h-full flex-col overflow-hidden p-7"
     >
-      <div className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-brand-50 text-brand-600 group-hover:bg-brand-100">
-        <Icon className="h-5 w-5" aria-hidden="true" />
+      {/* Hover halo */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-brand-100 opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-80"
+      />
+
+      {/* Top accent line */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px scale-x-0 bg-gradient-to-r from-transparent via-brand-500 to-transparent transition-transform duration-500 group-hover:scale-x-100"
+      />
+
+      <div
+        className="relative inline-flex h-12 w-12 items-center justify-center rounded-xl text-white shadow-brand-glow"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
+        }}
+      >
+        <Icon className="h-5.5 w-5.5 h-[22px] w-[22px]" aria-hidden="true" />
       </div>
-      <h3 className="mt-4 text-lg font-semibold text-slate-900">
+
+      <h3 className="relative mt-5 font-display text-lg font-semibold text-slate-900 group-hover:text-brand-700">
         {service.title}
       </h3>
-      <p className="mt-2 flex-1 text-sm text-slate-600">{service.excerpt}</p>
-      <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-brand-600 group-hover:text-brand-700">
-        Detail
-        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+      <p className="relative mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+        {service.excerpt}
+      </p>
+
+      <span className="relative mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
+        <span>Lihat detail</span>
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-slate-100 text-slate-900 transition-all duration-300 group-hover:bg-slate-900 group-hover:text-white">
+          <ArrowUpRight
+            className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-12"
+            aria-hidden="true"
+          />
+        </span>
       </span>
     </Link>
   );

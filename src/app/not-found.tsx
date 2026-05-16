@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { defaultLocale } from "@/i18n/config";
 import { getSiteSettings } from "@/lib/content";
 
@@ -9,16 +10,27 @@ export const metadata = {
 export default function NotFound() {
   const settings = getSiteSettings();
   return (
-    <main className="grid min-h-[60vh] place-items-center bg-white p-6">
-      <div className="text-center">
-        <p className="text-sm font-medium text-brand-600">404</p>
-        <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+    <main className="relative grid min-h-screen place-items-center overflow-hidden bg-white p-6">
+      <div className="absolute inset-0 bg-mesh" aria-hidden="true" />
+      <div
+        className="absolute inset-0 bg-grid opacity-30 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]"
+        aria-hidden="true"
+      />
+      <div className="relative text-center">
+        <p className="font-display text-[10rem] font-bold leading-none tracking-tight text-gradient-brand sm:text-[14rem]">
+          404
+        </p>
+        <h1 className="-mt-4 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           Page not found
         </h1>
-        <p className="mt-3 max-w-md text-slate-600">
+        <p className="mx-auto mt-4 max-w-md text-pretty text-slate-600">
           The page you are looking for is unavailable or has been moved.
         </p>
-        <Link href={`/${defaultLocale}`} className="btn-primary mt-6">
+        <Link
+          href={`/${defaultLocale}`}
+          className="btn-primary mt-8 h-12 px-6 text-sm"
+        >
+          <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Back to {settings.brandName}
         </Link>
       </div>

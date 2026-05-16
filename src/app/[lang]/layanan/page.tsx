@@ -5,7 +5,7 @@ import { getDictionary } from "@/i18n/getDictionary";
 import { getServices, getSiteSettings } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
 import { ServiceCard } from "@/components/ServiceCard";
-import { Breadcrumb } from "@/components/Breadcrumb";
+import { PageHero } from "@/components/PageHero";
 import { JsonLd, breadcrumbSchema } from "@/components/JsonLd";
 
 interface PageProps {
@@ -41,24 +41,17 @@ export default async function ServicesPage({ params }: PageProps) {
           { name: dict.nav.services, url: `${baseUrl}/${locale}/layanan` },
         ])}
       />
-      <section className="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-white py-12 lg:py-16">
-        <div className="container">
-          <Breadcrumb
-            items={[
-              { label: dict.nav.home, href: `/${locale}` },
-              { label: dict.nav.services },
-            ]}
-          />
-          <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-            {dict.services.heading}
-          </h1>
-          <p className="mt-3 max-w-2xl text-lg text-slate-600">
-            {dict.services.subheading}
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={dict.nav.services}
+        title={dict.services.heading}
+        subtitle={dict.services.subheading}
+        breadcrumb={[
+          { label: dict.nav.home, href: `/${locale}` },
+          { label: dict.nav.services },
+        ]}
+      />
 
-      <section className="bg-white py-12">
+      <section className="bg-white py-16 sm:py-20">
         <div className="container">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {services.map((s) => (

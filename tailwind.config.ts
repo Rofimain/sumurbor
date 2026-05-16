@@ -37,11 +37,17 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       maxWidth: {
         prose: "68ch",
+      },
+      boxShadow: {
+        "soft-sm": "0 1px 2px 0 rgb(15 23 42 / 0.04)",
+        soft: "0 1px 2px 0 rgb(15 23 42 / 0.04), 0 8px 20px -8px rgb(15 23 42 / 0.08)",
+        "soft-lg": "0 2px 4px 0 rgb(15 23 42 / 0.04), 0 20px 40px -12px rgb(15 23 42 / 0.12)",
+        "brand-glow": "0 8px 24px -8px rgb(var(--brand-500) / 0.6)",
       },
     },
   },

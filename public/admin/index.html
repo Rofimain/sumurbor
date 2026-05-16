@@ -6,8 +6,128 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Admin — Rofimain Drilling</title>
     <link rel="icon" href="/favicon.ico" />
+    <link
+      rel="preconnect"
+      href="https://rsms.me/"
+      crossorigin
+    />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      :root {
+        --brand-50: #f0f9ff;
+        --brand-100: #e0f2fe;
+        --brand-200: #bae6fd;
+        --brand-300: #7dd3fc;
+        --brand-400: #38bdf8;
+        --brand-500: #0ea5e9;
+        --brand-600: #0284c7;
+        --brand-700: #0369a1;
+        --brand-900: #0c4a6e;
+        --ink: #0f172a;
+        --muted: #64748b;
+      }
+
+      html,
+      body {
+        font-family: "Inter var", "Inter", ui-sans-serif, system-ui,
+          -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+        font-feature-settings: "ss01" 1, "cv11" 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background: #f8fafc;
+        color: var(--ink);
+      }
+
+      /* ─── Login page makeover ───────────────────────────── */
+      .nc-loginPage-button {
+        background: linear-gradient(
+          135deg,
+          var(--brand-500) 0%,
+          var(--brand-600) 100%
+        ) !important;
+        color: #fff !important;
+        border-radius: 9999px !important;
+        padding: 14px 28px !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+        letter-spacing: 0.01em !important;
+        box-shadow:
+          0 8px 24px -8px rgba(14, 165, 233, 0.55),
+          0 2px 4px -1px rgba(15, 23, 42, 0.06) !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease,
+          background 0.2s ease !important;
+      }
+      .nc-loginPage-button:hover {
+        transform: translateY(-1px);
+        box-shadow:
+          0 12px 32px -8px rgba(14, 165, 233, 0.7),
+          0 4px 8px -2px rgba(15, 23, 42, 0.08) !important;
+        background: linear-gradient(
+          135deg,
+          var(--brand-400) 0%,
+          var(--brand-600) 100%
+        ) !important;
+      }
+      .nc-loginPage-button:active {
+        transform: translateY(0);
+      }
+
+      /* Decap default uses inline styles for many elements;
+         we layer a friendly canvas behind the login card. */
+      body[data-cms-loaded] {
+        position: relative;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(at 18% 22%, rgba(186, 230, 253, 0.55) 0px, transparent 50%),
+          radial-gradient(at 82% 0%, rgba(125, 211, 252, 0.4) 0px, transparent 45%),
+          radial-gradient(at 60% 100%, rgba(224, 242, 254, 0.6) 0px, transparent 50%);
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(
+          ellipse at center,
+          black 30%,
+          transparent 75%
+        );
+        mask-image: radial-gradient(
+          ellipse at center,
+          black 30%,
+          transparent 75%
+        );
+      }
+      #nc-root,
+      #nc-root > div {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Refined typography for login heading & branding */
+      [class*="LoginPageLogoIcon"] {
+        filter: drop-shadow(0 4px 16px rgba(14, 165, 233, 0.25));
+      }
+    </style>
   </head>
   <body>
     <script src="https://unpkg.com/decap-cms@^3.5.0/dist/decap-cms.js"></script>
+    <script>
+      // Mark body so we can target the post-load state
+      window.addEventListener("load", function () {
+        document.body.setAttribute("data-cms-loaded", "true");
+      });
+    </script>
   </body>
 </html>

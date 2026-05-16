@@ -8,7 +8,8 @@ import {
   getSiteSettings,
 } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
-import { Breadcrumb } from "@/components/Breadcrumb";
+import { PageHero } from "@/components/PageHero";
+import { Images } from "lucide-react";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -74,73 +75,78 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         ])}
       />
 
-      <section className="border-b border-slate-100 bg-gradient-to-b from-brand-50 to-white py-12 lg:py-16">
-        <div className="container">
-          <Breadcrumb
-            items={[
-              { label: dict.nav.home, href: `/${locale}` },
-              { label: dict.nav.projects, href: `/${locale}/proyek` },
-              { label: fm.title },
-            ]}
-          />
-          <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
-            {fm.title}
-          </h1>
-          <p className="mt-3 max-w-2xl text-lg text-slate-600">{fm.summary}</p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={dict.nav.projects}
+        title={fm.title}
+        subtitle={fm.summary}
+        breadcrumb={[
+          { label: dict.nav.home, href: `/${locale}` },
+          { label: dict.nav.projects, href: `/${locale}/proyek` },
+          { label: fm.title },
+        ]}
+      />
 
       {fm.coverImage && (
         <div className="bg-white">
-          <div className="container py-8">
+          <div className="container py-10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={fm.coverImage}
               alt={fm.title}
-              className="aspect-[16/9] w-full rounded-2xl object-cover"
+              className="aspect-[16/9] w-full rounded-3xl object-cover shadow-soft-lg"
             />
           </div>
         </div>
       )}
 
-      <section className="bg-white pb-14">
-        <div className="container grid gap-10 lg:grid-cols-3">
+      <section className="bg-white pb-16 sm:pb-20">
+        <div className="container grid gap-12 lg:grid-cols-3">
           <article
             className="prose-content lg:col-span-2"
             dangerouslySetInnerHTML={{ __html: project.html }}
           />
-          <aside>
-            <dl className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm">
-              {specs
-                .filter((s) => s.value !== undefined && s.value !== "")
-                .map((s) => (
-                  <div
-                    key={s.label}
-                    className="flex justify-between gap-3 border-b border-slate-200 py-2 last:border-0"
-                  >
-                    <dt className="text-slate-500">{s.label}</dt>
-                    <dd className="font-medium text-slate-900">{s.value}</dd>
-                  </div>
-                ))}
-            </dl>
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <div className="card-elevated p-6">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-700">
+                Spesifikasi Proyek
+              </h3>
+              <dl className="mt-4 divide-y divide-slate-100 text-sm">
+                {specs
+                  .filter((s) => s.value !== undefined && s.value !== "")
+                  .map((s) => (
+                    <div
+                      key={s.label}
+                      className="flex justify-between gap-3 py-3 first:pt-0 last:pb-0"
+                    >
+                      <dt className="text-slate-500">{s.label}</dt>
+                      <dd className="font-semibold text-slate-900">{s.value}</dd>
+                    </div>
+                  ))}
+              </dl>
+            </div>
           </aside>
         </div>
       </section>
 
       {fm.gallery && fm.gallery.length > 0 && (
-        <section className="border-t border-slate-100 bg-slate-50 py-14">
+        <section className="border-t border-slate-100 bg-slate-50/60 py-16 sm:py-20">
           <div className="container">
-            <h2 className="font-display text-2xl font-semibold tracking-tight text-slate-900">
-              Galeri
-            </h2>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex items-center gap-3">
+              <div className="grid h-9 w-9 place-items-center rounded-lg bg-brand-50 text-brand-600">
+                <Images className="h-4 w-4" aria-hidden="true" />
+              </div>
+              <h2 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                Galeri Proyek
+              </h2>
+            </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {fm.gallery.map((src) => (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   key={src}
                   src={src}
                   alt={fm.title}
-                  className="aspect-[4/3] w-full rounded-xl object-cover"
+                  className="aspect-[4/3] w-full rounded-2xl object-cover shadow-soft transition-transform duration-500 hover:scale-[1.02]"
                   loading="lazy"
                 />
               ))}
