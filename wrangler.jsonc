@@ -11,6 +11,13 @@
   "observability": {
     "enabled": true
   },
+  "routes": [
+    {
+      "pattern": "sumurbor.rofimain.com",
+      "zone_name": "rofimain.com",
+      "custom_domain": true
+    }
+  ],
   "vars": {
     "NEXTJS_ENV": "production"
   }
