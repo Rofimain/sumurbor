@@ -48,9 +48,9 @@ const HTML_CALLBACK = (payload) => `<!doctype html>
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const path = url.pathname.replace(/\/+/g, "/");
 
-    // Step 1: redirect ke GitHub OAuth
-    if (url.pathname === "/auth") {
+    if (path === "/auth") {
       const params = new URLSearchParams({
         client_id: env.GITHUB_CLIENT_ID,
         redirect_uri: `${url.origin}/callback`,
@@ -63,8 +63,7 @@ export default {
       );
     }
 
-    // Step 2: callback — tukar code dengan access token
-    if (url.pathname === "/callback") {
+    if (path === "/callback") {
       const code = url.searchParams.get("code");
       if (!code) return new Response("Missing code", { status: 400 });
 

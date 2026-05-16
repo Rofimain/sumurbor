@@ -3,7 +3,7 @@ backend:
   repo: Rofimain/sumurbor
   branch: main
   base_url: https://oauth-sumurbor.rofimain.com
-  auth_endpoint: /auth
+  auth_endpoint: auth
 
 publish_mode: editorial_workflow
 
