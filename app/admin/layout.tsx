@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Briefcase,
@@ -34,6 +35,23 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [brand, setBrand] = useState<{ brandName: string; logo: string }>({
+    brandName: "Admin",
+    logo: "",
+  });
+
+  useEffect(() => {
+    if (pathname === "/admin/login") return;
+    fetch("/api/settings/public")
+      .then((r) => r.json())
+      .then((s) =>
+        setBrand({
+          brandName: s.brandName || "Admin",
+          logo: s.logo || "",
+        }),
+      )
+      .catch(() => {});
+  }, [pathname]);
 
   if (pathname === "/admin/login") {
     return <>{children}</>;
@@ -49,41 +67,51 @@ export default function AdminLayout({
     <div className="flex min-h-screen bg-surface-alt">
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r border-surface-line bg-white px-4 py-6 lg:flex lg:flex-col">
         <Link href="/admin" className="flex items-center gap-2.5 px-2">
-          <span
-            className="grid h-10 w-10 place-items-center rounded-xl text-white shadow-brand-glow"
-            style={{
-              backgroundImage:
-                "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
-            }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M12 2L4 7v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V7l-8-5z"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12 7v8M8 11h8"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          <div className="leading-none">
-            <p className="font-heading text-sm font-bold text-ink">
-              Rofimain CMS
-            </p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-400">
-              Admin Console
-            </p>
-          </div>
+          {brand.logo ? (
+            <img
+              src={brand.logo}
+              alt={brand.brandName}
+              className="h-10 w-auto max-w-[180px] object-contain"
+            />
+          ) : (
+            <>
+              <span
+                className="grid h-10 w-10 place-items-center rounded-xl text-white shadow-brand-glow"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(135deg, rgb(var(--brand-400)) 0%, rgb(var(--brand-600)) 100%)",
+                }}
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 2L4 7v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V7l-8-5z"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 7v8M8 11h8"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </span>
+              <div className="min-w-0 leading-none">
+                <p className="truncate font-heading text-sm font-bold text-ink">
+                  {brand.brandName}
+                </p>
+                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                  Admin Console
+                </p>
+              </div>
+            </>
+          )}
         </Link>
 
         <nav className="mt-8 flex-1 space-y-1 text-sm">
@@ -147,8 +175,19 @@ export default function AdminLayout({
       <div className="flex min-w-0 flex-1 flex-col">
         {/* mobile top bar */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-surface-line bg-white px-4 lg:hidden">
-          <Link href="/admin" className="font-heading text-sm font-bold text-ink">
-            Rofimain CMS
+          <Link
+            href="/admin"
+            className="flex items-center gap-2 truncate font-heading text-sm font-bold text-ink"
+          >
+            {brand.logo ? (
+              <img
+                src={brand.logo}
+                alt={brand.brandName}
+                className="h-8 w-auto max-w-[140px] object-contain"
+              />
+            ) : (
+              <span className="truncate">{brand.brandName}</span>
+            )}
           </Link>
           <button
             type="button"

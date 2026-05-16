@@ -139,7 +139,10 @@ export default async function RootLayout({
         <main className={isAdmin ? "" : "min-h-screen"}>{children}</main>
         {!isAdmin && <Footer settings={settings} />}
         {!isAdmin && settings.whatsapp && (
-          <FloatingWhatsApp whatsapp={settings.whatsapp} />
+          <FloatingWhatsApp
+            whatsapp={settings.whatsapp}
+            brandName={settings.brandName}
+          />
         )}
       </body>
     </html>

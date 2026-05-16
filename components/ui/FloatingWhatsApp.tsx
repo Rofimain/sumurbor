@@ -3,15 +3,20 @@ import { whatsappUrl } from "@/lib/utils";
 
 export function FloatingWhatsApp({
   whatsapp,
+  brandName,
   label = "Chat WhatsApp",
 }: {
   whatsapp: string;
+  brandName: string;
   label?: string;
 }) {
   if (!whatsapp) return null;
   return (
     <a
-      href={whatsappUrl(whatsapp, "Halo, saya tertarik dengan layanan Rofimain Drilling.")}
+      href={whatsappUrl(
+        whatsapp,
+        `Halo, saya tertarik dengan layanan ${brandName}.`,
+      )}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
