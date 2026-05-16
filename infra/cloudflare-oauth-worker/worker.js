@@ -17,30 +17,47 @@
  *   - Authorization callback: https://oauth-sumurbor.rofimain.com/callback
  */
 
-const HTML_CALLBACK = (payload) => `<!doctype html>
+const HTML_CALLBACK = (status, payload) => `<!doctype html>
 <html><head><meta charset="utf-8" /><title>Authorizing…</title>
 <style>
   body { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #334155;
          display: grid; place-items: center; min-height: 100vh; margin: 0; }
   .box { text-align: center; max-width: 380px; padding: 24px; }
   .ok { color: #16a34a; font-weight: 600; }
+  .err { color: #dc2626; font-weight: 600; }
 </style></head>
 <body><div class="box">
-<p class="ok">Authorized</p>
-<p>This window should close automatically. If not, you may close it manually.</p>
+<p class="${status === "success" ? "ok" : "err"}">${status === "success" ? "Authorized" : "Authorization failed"}</p>
+<p>This window should close automatically.</p>
 </div>
 <script>
   (function () {
+    var status = ${JSON.stringify(status)};
     var payload = ${JSON.stringify(payload)};
-    function sendMessage(status, content) {
-      var msg = "authorization:github:" + status + ":" + JSON.stringify(content);
-      window.opener && window.opener.postMessage(msg, "*");
+    var sent = false;
+
+    function sendToken() {
+      if (sent || !window.opener) return;
+      sent = true;
+      var msg = "authorization:github:" + status + ":" + JSON.stringify(payload);
+      window.opener.postMessage(msg, "*");
+      setTimeout(function () { try { window.close(); } catch (e) {} }, 500);
     }
+
+    // Decap handshake protocol:
+    // 1) popup sends "authorizing:github" to opener
+    // 2) opener (Decap admin) replies with "authorizing:github"
+    // 3) popup sends "authorization:github:<status>:<payload>"
     window.addEventListener("message", function (e) {
-      if (e.data === "authorizing:github") sendMessage("success", payload);
+      if (e.data === "authorizing:github") sendToken();
     }, false);
-    sendMessage("success", payload);
-    setTimeout(function () { try { window.close(); } catch (e) {} }, 800);
+
+    if (window.opener) {
+      window.opener.postMessage("authorizing:github", "*");
+    }
+
+    // Fallback: if opener never acks within 3s, send token anyway
+    setTimeout(sendToken, 3000);
   })();
 </script>
 </body></html>`;
@@ -84,11 +101,12 @@ export default {
       );
       const tokenData = await tokenRes.json();
 
+      const status = tokenData.access_token ? "success" : "error";
       const payload = tokenData.access_token
         ? { token: tokenData.access_token, provider: "github" }
-        : { error: tokenData.error ?? "auth_failed" };
+        : { message: tokenData.error_description ?? tokenData.error ?? "auth_failed" };
 
-      return new Response(HTML_CALLBACK(payload), {
+      return new Response(HTML_CALLBACK(status, payload), {
         headers: { "Content-Type": "text/html; charset=utf-8" },
       });
     }
