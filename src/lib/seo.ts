@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
-import type { Locale } from "@/i18n/config";
 import { getSiteSettings } from "./content";
-import { alternateUrls } from "./url";
 
 interface BuildMetadataInput {
-  locale: Locale;
   title: string;
   description: string;
   pathSegments: string[];
@@ -15,7 +12,6 @@ interface BuildMetadataInput {
 }
 
 export function buildMetadata({
-  locale,
   title,
   description,
   pathSegments,
@@ -25,27 +21,23 @@ export function buildMetadata({
   noindex,
 }: BuildMetadataInput): Metadata {
   const settings = getSiteSettings();
-  const { canonical, languages } = alternateUrls(settings.siteUrl, pathSegments);
-  const url = `${settings.siteUrl.replace(/\/$/, "")}/${locale}${
-    pathSegments.length ? "/" + pathSegments.join("/") : ""
-  }`;
-  const image = ogImage ?? settings.ogImage ?? "/images/branding/og-default.png";
+  const baseUrl = settings.siteUrl.replace(/\/$/, "");
+  const url =
+    baseUrl + (pathSegments.length ? "/" + pathSegments.join("/") : "/");
+  const image = ogImage || settings.ogImage || "/images/branding/og-default.png";
 
   return {
     title,
     description,
     metadataBase: new URL(settings.siteUrl),
-    alternates: {
-      canonical: url,
-      languages,
-    },
+    alternates: { canonical: url },
     openGraph: {
       type,
       url,
       title,
       description,
       siteName: settings.brandName,
-      locale: locale === "id" ? "id_ID" : "en_US",
+      locale: "id_ID",
       images: [{ url: image }],
       ...(publishedTime ? { publishedTime } : {}),
     },
@@ -67,5 +59,3 @@ export function buildMetadata({
     },
   };
 }
-
-export { alternateUrls };

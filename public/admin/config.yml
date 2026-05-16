@@ -5,7 +5,7 @@ backend:
   base_url: https://oauth-sumurbor.rofimain.com
   auth_endpoint: auth
 
-publish_mode: editorial_workflow
+publish_mode: simple
 
 media_folder: "public/images/uploads"
 public_folder: "/images/uploads"
@@ -16,67 +16,51 @@ logo_url: /images/branding/logo.svg
 
 locale: "id"
 
-i18n:
-  structure: multiple_folders
-  locales: [id, en]
-  default_locale: id
-
 collections:
-  # ──────────────────────── SETTINGS (single file) ────────────────────────
+  # ──────────────────────── PENGATURAN WEBSITE ─────────────
   - name: settings
     label: "Pengaturan Website"
     description: "Brand, kontak, sosial media, dan info global website."
     delete: false
-    editor:
-      preview: false
+    editor: { preview: false }
     files:
       - name: general
         label: "Umum"
         file: "content/settings/general.json"
         fields:
-          - { name: brandName, label: "Nama Brand", widget: string }
-          - name: brandTagline
-            label: "Tagline"
-            widget: object
-            fields:
-              - { name: id, label: "Tagline (ID)", widget: string }
-              - { name: en, label: "Tagline (EN)", widget: string }
-          - { name: logo, label: "Logo (utama)", widget: image, required: false }
-          - { name: logoLight, label: "Logo (terang)", widget: image, required: false }
-          - { name: favicon, label: "Favicon", widget: image, required: false }
-          - { name: ogImage, label: "OG Image default", widget: image, required: false }
-          - { name: primaryColor, label: "Warna Brand (HEX)", widget: color, default: "#0ea5e9", allowInput: true }
-          - { name: siteUrl, label: "URL Website", widget: string }
-          - { name: phone, label: "Telepon (E.164, mis. +62812…)", widget: string }
-          - { name: phoneDisplay, label: "Telepon (tampilan)", widget: string }
-          - { name: whatsapp, label: "WhatsApp (angka saja, mis. 6281234…)", widget: string }
-          - { name: email, label: "Email", widget: string }
+          - { name: brandName,     label: "Nama Brand",                       widget: string }
+          - { name: brandTagline,  label: "Tagline",                          widget: string }
+          - { name: logo,          label: "Logo (utama)",                     widget: image, required: false }
+          - { name: logoLight,     label: "Logo (terang/footer)",             widget: image, required: false }
+          - { name: favicon,       label: "Favicon",                          widget: image, required: false }
+          - { name: ogImage,       label: "Gambar OG default (sosmed share)", widget: image, required: false }
+          - { name: primaryColor,  label: "Warna Brand (HEX)",                widget: color, default: "#0ea5e9", allowInput: true }
+          - { name: siteUrl,       label: "URL Website",                      widget: string }
+          - { name: phone,         label: "Telepon (E.164, +62812…)",         widget: string }
+          - { name: phoneDisplay,  label: "Telepon (tampilan)",               widget: string }
+          - { name: whatsapp,      label: "WhatsApp (angka saja, 6281234…)",  widget: string }
+          - { name: email,         label: "Email",                            widget: string }
           - name: address
             label: "Alamat"
             widget: object
             fields:
-              - { name: street, label: "Jalan", widget: string }
-              - { name: district, label: "Kelurahan/Kecamatan", widget: string }
-              - { name: city, label: "Kota", widget: string }
-              - { name: region, label: "Provinsi", widget: string }
-              - { name: postalCode, label: "Kode Pos", widget: string }
-              - { name: country, label: "Negara (kode)", widget: string, default: "ID" }
-          - { name: googleMapsUrl, label: "Google Maps URL", widget: string, required: false }
-          - name: businessHours
-            label: "Jam Operasional"
-            widget: object
-            fields:
-              - { name: id, label: "Jam (ID)", widget: string }
-              - { name: en, label: "Hours (EN)", widget: string }
+              - { name: street,      label: "Jalan",               widget: string }
+              - { name: district,    label: "Kelurahan/Kecamatan", widget: string }
+              - { name: city,        label: "Kota",                widget: string }
+              - { name: region,      label: "Provinsi",            widget: string }
+              - { name: postalCode,  label: "Kode Pos",            widget: string }
+              - { name: country,     label: "Negara (kode)",       widget: string, default: "ID" }
+          - { name: googleMapsUrl, label: "Google Maps URL",                  widget: string, required: false }
+          - { name: businessHours, label: "Jam Operasional",                  widget: string }
           - name: social
             label: "Sosial Media"
             widget: object
             fields:
               - { name: instagram, label: "Instagram URL", widget: string, required: false }
-              - { name: facebook, label: "Facebook URL", widget: string, required: false }
-              - { name: linkedin, label: "LinkedIn URL", widget: string, required: false }
-              - { name: youtube, label: "YouTube URL", widget: string, required: false }
-              - { name: tiktok, label: "TikTok URL", widget: string, required: false }
+              - { name: facebook,  label: "Facebook URL",  widget: string, required: false }
+              - { name: linkedin,  label: "LinkedIn URL",  widget: string, required: false }
+              - { name: youtube,   label: "YouTube URL",   widget: string, required: false }
+              - { name: tiktok,    label: "TikTok URL",    widget: string, required: false }
           - name: areaServed
             label: "Area Layanan"
             widget: list
@@ -87,143 +71,109 @@ collections:
         label: "Tentang Kami"
         file: "content/about/about.json"
         fields:
-          - name: id
-            label: "Bahasa Indonesia"
-            widget: object
+          - { name: title,    label: "Judul",     widget: string }
+          - { name: subtitle, label: "Subjudul",  widget: string }
+          - { name: intro,    label: "Intro",     widget: text }
+          - { name: mission,  label: "Misi",      widget: text }
+          - { name: vision,   label: "Visi",      widget: text }
+          - name: values
+            label: "Nilai"
+            widget: list
             fields:
-              - { name: title, label: "Judul", widget: string }
-              - { name: subtitle, label: "Subjudul", widget: string }
-              - { name: intro, label: "Intro", widget: text }
-              - { name: mission, label: "Misi", widget: text }
-              - { name: vision, label: "Visi", widget: text }
-              - name: values
-                label: "Nilai"
-                widget: list
-                fields:
-                  - { name: title, label: "Judul", widget: string }
-                  - { name: body, label: "Deskripsi", widget: text }
-              - name: certifications
-                label: "Sertifikasi"
-                widget: list
-                field: { name: cert, label: "Sertifikasi", widget: string }
-          - name: en
-            label: "English"
-            widget: object
-            fields:
-              - { name: title, label: "Title", widget: string }
-              - { name: subtitle, label: "Subtitle", widget: string }
-              - { name: intro, label: "Intro", widget: text }
-              - { name: mission, label: "Mission", widget: text }
-              - { name: vision, label: "Vision", widget: text }
-              - name: values
-                label: "Values"
-                widget: list
-                fields:
-                  - { name: title, label: "Title", widget: string }
-                  - { name: body, label: "Body", widget: text }
-              - name: certifications
-                label: "Certifications"
-                widget: list
-                field: { name: cert, label: "Certification", widget: string }
+              - { name: title, label: "Judul",      widget: string }
+              - { name: body,  label: "Deskripsi",  widget: text }
+          - name: certifications
+            label: "Sertifikasi"
+            widget: list
+            field: { name: cert, label: "Sertifikasi", widget: string }
 
-  # ──────────────────────── SERVICES (i18n) ────────────────────────
+  # ──────────────────────── LAYANAN ───────────────────────
   - name: services
     label: "Layanan"
     label_singular: "Layanan"
     folder: "content/services"
     create: true
-    i18n: true
     slug: "{{slug}}"
-    path: "{{locale}}/{{slug}}"
     extension: md
     format: frontmatter
     summary: "{{title}}"
     sortable_fields: [order, title]
     fields:
-      - { label: "Judul", name: title, widget: string, i18n: true }
-      - { label: "Slug", name: slug, widget: string, i18n: duplicate, hint: "URL: /layanan/[slug]" }
-      - { label: "Urutan", name: order, widget: number, value_type: int, default: 1, i18n: duplicate }
-      - { label: "Ringkasan", name: excerpt, widget: text, i18n: true }
-      - label: "Icon"
-        name: icon
+      - { name: title,      label: "Judul",              widget: string }
+      - { name: slug,       label: "Slug",               widget: string, hint: "URL: /layanan/[slug]" }
+      - { name: order,      label: "Urutan",             widget: number, value_type: int, default: 1 }
+      - { name: excerpt,    label: "Ringkasan",          widget: text }
+      - name: icon
+        label: "Icon"
         widget: select
         options: [droplets, construction, drill]
         default: droplets
-        i18n: duplicate
-      - { label: "Gambar Cover", name: coverImage, widget: image, required: false, i18n: duplicate }
-      - label: "Fitur"
-        name: features
+      - { name: coverImage, label: "Gambar Cover",       widget: image, required: false }
+      - name: features
+        label: "Fitur"
         widget: list
         field: { name: item, label: "Fitur", widget: string }
-        i18n: true
-      - label: "FAQ"
-        name: faq
+      - name: faq
+        label: "FAQ"
         widget: list
-        i18n: true
         fields:
           - { name: q, label: "Pertanyaan", widget: string }
-          - { name: a, label: "Jawaban", widget: text }
-      - { label: "Konten", name: body, widget: markdown, i18n: true }
+          - { name: a, label: "Jawaban",    widget: text }
+      - { name: body, label: "Konten", widget: markdown }
 
-  # ──────────────────────── ARTICLES (i18n) ────────────────────────
+  # ──────────────────────── ARTIKEL ───────────────────────
   - name: articles
     label: "Artikel"
     label_singular: "Artikel"
     folder: "content/articles"
     create: true
-    i18n: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    path: "{{locale}}/{{slug}}"
+    slug: "{{slug}}"
     extension: md
     format: frontmatter
     summary: "{{title}} — {{date | date('YYYY-MM-DD')}}"
     sortable_fields: [date, title]
     fields:
-      - { label: "Judul", name: title, widget: string, i18n: true }
-      - { label: "Slug", name: slug, widget: string, i18n: duplicate }
-      - { label: "Tanggal", name: date, widget: datetime, i18n: duplicate }
-      - { label: "Penulis", name: author, widget: string, required: false, i18n: duplicate }
-      - { label: "Ringkasan", name: excerpt, widget: text, i18n: true }
-      - { label: "Gambar Cover", name: coverImage, widget: image, required: false, i18n: duplicate }
-      - label: "Tags"
-        name: tags
+      - { name: title,      label: "Judul",                          widget: string }
+      - { name: slug,       label: "Slug",                           widget: string, hint: "URL: /artikel/[slug]" }
+      - { name: date,       label: "Tanggal",                        widget: datetime }
+      - { name: author,     label: "Penulis",                        widget: string, required: false, default: "Tim Engineering" }
+      - { name: excerpt,    label: "Ringkasan",                      widget: text }
+      - { name: coverImage, label: "Gambar Cover",                   widget: image, required: false }
+      - name: tags
+        label: "Tags"
         widget: list
         required: false
-        i18n: true
         field: { name: tag, label: "Tag", widget: string }
-      - { label: "Estimasi waktu baca (menit)", name: readTime, widget: number, required: false, value_type: int, i18n: duplicate }
-      - { label: "Konten", name: body, widget: markdown, i18n: true }
+      - { name: readTime,   label: "Estimasi waktu baca (menit)",    widget: number, required: false, value_type: int }
+      - { name: body,       label: "Konten",                         widget: markdown }
 
-  # ──────────────────────── PROJECTS (i18n) ────────────────────────
+  # ──────────────────────── PROYEK ────────────────────────
   - name: projects
     label: "Proyek"
     label_singular: "Proyek"
     folder: "content/projects"
     create: true
-    i18n: true
-    slug: "{{year}}-{{slug}}"
-    path: "{{locale}}/{{slug}}"
+    slug: "{{slug}}"
     extension: md
     format: frontmatter
     summary: "{{title}} ({{year}})"
     sortable_fields: [year, title]
     fields:
-      - { label: "Judul Proyek", name: title, widget: string, i18n: true }
-      - { label: "Slug", name: slug, widget: string, i18n: duplicate }
-      - { label: "Lokasi", name: location, widget: string, i18n: true }
-      - { label: "Tahun", name: year, widget: number, value_type: int, i18n: duplicate }
-      - { label: "Jenis Pekerjaan", name: serviceType, widget: string, i18n: true }
-      - { label: "Kedalaman", name: depth, widget: string, required: false, i18n: duplicate }
-      - { label: "Diameter", name: diameter, widget: string, required: false, i18n: duplicate }
-      - { label: "Jumlah Titik", name: piles, widget: number, required: false, value_type: int, i18n: duplicate }
-      - { label: "Durasi Pengerjaan", name: duration, widget: string, required: false, i18n: true }
-      - { label: "Klien", name: client, widget: string, required: false, i18n: true }
-      - { label: "Gambar Cover", name: coverImage, widget: image, required: false, i18n: duplicate }
-      - label: "Galeri"
-        name: gallery
+      - { name: title,       label: "Judul Proyek",         widget: string }
+      - { name: slug,        label: "Slug",                 widget: string, hint: "URL: /proyek/[slug]" }
+      - { name: location,    label: "Lokasi",               widget: string }
+      - { name: year,        label: "Tahun",                widget: number, value_type: int }
+      - { name: serviceType, label: "Jenis Pekerjaan",      widget: string }
+      - { name: depth,       label: "Kedalaman",            widget: string, required: false }
+      - { name: diameter,    label: "Diameter",             widget: string, required: false }
+      - { name: piles,       label: "Jumlah Titik",         widget: number, required: false, value_type: int }
+      - { name: duration,    label: "Durasi Pengerjaan",    widget: string, required: false }
+      - { name: client,      label: "Klien",                widget: string, required: false }
+      - { name: coverImage,  label: "Gambar Cover",         widget: image, required: false }
+      - name: gallery
+        label: "Galeri"
         widget: list
         required: false
-        i18n: true
         field: { name: image, label: "Gambar", widget: image }
-      - { label: "Ringkasan", name: summary, widget: text, i18n: true }
-      - { label: "Detail Proyek", name: body, widget: markdown, i18n: true }
+      - { name: summary, label: "Ringkasan",        widget: text }
+      - { name: body,    label: "Detail Proyek",    widget: markdown }

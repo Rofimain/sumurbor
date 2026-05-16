@@ -1,40 +1,19 @@
 {
-  "id": {
-    "title": "Tentang Rofimain Drilling",
-    "subtitle": "Mitra pondasi tepercaya sejak 2015",
-    "intro": "Rofimain Drilling adalah kontraktor spesialis sumur bor dan pondasi bor pile dengan pengalaman lebih dari satu dekade melayani proyek residensial, komersial, dan infrastruktur di seluruh Indonesia.",
-    "mission": "Memberikan solusi pondasi presisi tinggi dengan peralatan modern dan tim bersertifikat, didukung komitmen transparansi serta garansi pengerjaan.",
-    "vision": "Menjadi mitra kontraktor pondasi terpercaya di Asia Tenggara dengan standar mutu kelas dunia.",
-    "values": [
-      { "title": "Presisi", "body": "Setiap titik bor dieksekusi sesuai spesifikasi engineering." },
-      { "title": "Transparan", "body": "Laporan progres harian dengan dokumentasi visual." },
-      { "title": "Aman", "body": "K3 sebagai prioritas: zero accident target di setiap proyek." },
-      { "title": "On-time", "body": "Komitmen jadwal yang realistis dan dipertanggungjawabkan." }
-    ],
-    "certifications": [
-      "SBU Pelaksana Konstruksi BG009",
-      "SKK Konstruksi Ahli Geoteknik",
-      "ISO 9001:2015 (dalam proses)",
-      "Anggota INKINDO"
-    ]
-  },
-  "en": {
-    "title": "About Rofimain Drilling",
-    "subtitle": "Trusted foundation partner since 2015",
-    "intro": "Rofimain Drilling is a specialist contractor in water wells and bored pile foundations with over a decade of experience serving residential, commercial, and infrastructure projects across Indonesia.",
-    "mission": "Deliver high-precision foundation solutions backed by modern equipment, certified crews, and an uncompromising commitment to transparency and workmanship guarantees.",
-    "vision": "To be Southeast Asia's most trusted foundation contractor with world-class quality standards.",
-    "values": [
-      { "title": "Precision", "body": "Every borehole is executed to engineering spec." },
-      { "title": "Transparent", "body": "Daily progress reports with visual documentation." },
-      { "title": "Safe", "body": "HSE first: zero-accident target on every project." },
-      { "title": "On time", "body": "Realistic schedules we are accountable for." }
-    ],
-    "certifications": [
-      "SBU Construction Class BG009",
-      "SKK Construction — Geotechnical Expert",
-      "ISO 9001:2015 (in progress)",
-      "INKINDO member"
-    ]
-  }
+  "title": "Tentang Rofimain Drilling",
+  "subtitle": "Mitra pondasi tepercaya sejak 2015",
+  "intro": "Rofimain Drilling adalah kontraktor spesialis sumur bor dan pondasi bor pile dengan pengalaman lebih dari satu dekade melayani proyek residensial, komersial, dan infrastruktur di seluruh Indonesia.",
+  "mission": "Memberikan solusi pondasi presisi tinggi dengan peralatan modern dan tim bersertifikat, didukung komitmen transparansi serta garansi pengerjaan.",
+  "vision": "Menjadi mitra kontraktor pondasi terpercaya di Asia Tenggara dengan standar mutu kelas dunia.",
+  "values": [
+    { "title": "Presisi", "body": "Setiap titik bor dieksekusi sesuai spesifikasi engineering." },
+    { "title": "Transparan", "body": "Laporan progres harian dengan dokumentasi visual." },
+    { "title": "Aman", "body": "K3 sebagai prioritas: zero accident target di setiap proyek." },
+    { "title": "On-time", "body": "Komitmen jadwal yang realistis dan dipertanggungjawabkan." }
+  ],
+  "certifications": [
+    "SBU Pelaksana Konstruksi BG009",
+    "SKK Konstruksi Ahli Geoteknik",
+    "ISO 9001:2015 (dalam proses)",
+    "Anggota INKINDO"
+  ]
 }

@@ -10,26 +10,23 @@ import {
   Clock,
   ArrowUpRight,
 } from "lucide-react";
-import type { Locale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/getDictionary";
+import { t } from "@/lib/strings";
 import type { SiteSettings } from "@/lib/content";
 import { Logo } from "./Logo";
 
 interface FooterProps {
-  locale: Locale;
   settings: SiteSettings;
 }
 
-export function Footer({ locale, settings }: FooterProps) {
-  const dict = getDictionary(locale);
+export function Footer({ settings }: FooterProps) {
   const year = new Date().getFullYear();
 
   const links = [
-    { href: `/${locale}/tentang`, label: dict.nav.about },
-    { href: `/${locale}/layanan`, label: dict.nav.services },
-    { href: `/${locale}/proyek`, label: dict.nav.projects },
-    { href: `/${locale}/artikel`, label: dict.nav.articles },
-    { href: `/${locale}/kontak`, label: dict.nav.contact },
+    { href: "/tentang", label: t.nav.about },
+    { href: "/layanan", label: t.nav.services },
+    { href: "/proyek", label: t.nav.projects },
+    { href: "/artikel", label: t.nav.articles },
+    { href: "/kontak", label: t.nav.contact },
   ];
 
   const socials = [
@@ -52,7 +49,6 @@ export function Footer({ locale, settings }: FooterProps) {
 
   return (
     <footer className="relative overflow-hidden bg-slate-950 text-slate-300">
-      {/* gradient strip */}
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-0 h-px"
@@ -72,23 +68,23 @@ export function Footer({ locale, settings }: FooterProps) {
 
       <div className="container relative grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12 lg:py-20">
         <div className="space-y-5 lg:col-span-4">
-          <Logo settings={settings} locale={locale} variant="light" />
+          <Logo settings={settings} variant="light" />
           <p className="max-w-sm text-sm leading-relaxed text-slate-400">
-            {settings.brandTagline[locale]}
+            {settings.brandTagline}
           </p>
 
           <Link
-            href={`/${locale}/kontak`}
+            href="/kontak"
             className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-all hover:-translate-y-0.5 hover:bg-brand-50"
           >
-            {dict.cta.quote}
+            {t.cta.quote}
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
 
         <div className="lg:col-span-2">
           <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-white">
-            {dict.footer.quickLinks}
+            {t.footer.quickLinks}
           </h3>
           <ul className="mt-5 space-y-3 text-sm">
             {links.map((l) => (
@@ -106,7 +102,7 @@ export function Footer({ locale, settings }: FooterProps) {
 
         <div className="lg:col-span-3">
           <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-white">
-            {dict.footer.contactUs}
+            {t.footer.contactUs}
           </h3>
           <ul className="mt-5 space-y-3.5 text-sm">
             <li className="flex gap-2.5">
@@ -133,14 +129,14 @@ export function Footer({ locale, settings }: FooterProps) {
             </li>
             <li className="flex gap-2.5">
               <Clock className="mt-0.5 h-4 w-4 shrink-0 text-brand-400" aria-hidden="true" />
-              <span className="text-slate-400">{settings.businessHours[locale]}</span>
+              <span className="text-slate-400">{settings.businessHours}</span>
             </li>
           </ul>
         </div>
 
         <div className="lg:col-span-3">
           <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-white">
-            {dict.footer.followUs}
+            {t.footer.followUs}
           </h3>
           {socials.length > 0 ? (
             <div className="mt-5 flex flex-wrap gap-2.5">
@@ -163,7 +159,7 @@ export function Footer({ locale, settings }: FooterProps) {
 
           <div className="mt-7 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <p className="text-[11px] font-semibold uppercase tracking-wider text-brand-400">
-              {dict.cta.callUs}
+              {t.cta.callUs}
             </p>
             <a
               href={`tel:${settings.phone}`}
@@ -176,12 +172,9 @@ export function Footer({ locale, settings }: FooterProps) {
       </div>
 
       <div className="relative border-t border-white/5">
-        <div className="container flex flex-col items-center justify-between gap-2 py-6 text-xs text-slate-500 sm:flex-row">
+        <div className="container py-6 text-center text-xs text-slate-500">
           <p>
-            &copy; {year} {settings.brandName}. {dict.footer.rights}
-          </p>
-          <p className="text-slate-600">
-            Built with Next.js · Hosted on Cloudflare
+            &copy; {year} {settings.brandName}. {t.footer.rights}
           </p>
         </div>
       </div>

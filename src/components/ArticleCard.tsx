@@ -1,20 +1,11 @@
 import Link from "next/link";
 import { Calendar, Clock, ArrowUpRight } from "lucide-react";
-import type { Locale } from "@/i18n/config";
+import { t } from "@/lib/strings";
 import type { ArticleFrontmatter } from "@/lib/content";
-import type { Dictionary } from "@/i18n/getDictionary";
 
-export function ArticleCard({
-  locale,
-  article,
-  dict,
-}: {
-  locale: Locale;
-  article: ArticleFrontmatter;
-  dict: Dictionary;
-}) {
+export function ArticleCard({ article }: { article: ArticleFrontmatter }) {
   const date = new Date(article.date);
-  const formatted = new Intl.DateTimeFormat(locale === "id" ? "id-ID" : "en-US", {
+  const formatted = new Intl.DateTimeFormat("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -22,7 +13,7 @@ export function ArticleCard({
 
   return (
     <Link
-      href={`/${locale}/artikel/${article.slug}`}
+      href={`/artikel/${article.slug}`}
       className="card-elevated card-hover group relative flex h-full flex-col overflow-hidden"
     >
       <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
@@ -42,7 +33,7 @@ export function ArticleCard({
           </>
         ) : (
           <div className="grid h-full w-full place-items-center bg-gradient-to-br from-brand-50 via-white to-brand-100/40">
-            <span className="font-display text-2xl font-semibold tracking-tight text-brand-300">
+            <span className="font-display text-6xl font-bold tracking-tight text-brand-300">
               {article.title.charAt(0)}
             </span>
           </div>
@@ -60,7 +51,7 @@ export function ArticleCard({
               <span aria-hidden="true" className="h-1 w-1 rounded-full bg-slate-300" />
               <span className="inline-flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5 text-brand-500" aria-hidden="true" />
-                {article.readTime} {dict.articles.readTime}
+                {article.readTime} {t.articles.readTime}
               </span>
             </>
           )}
@@ -74,7 +65,7 @@ export function ArticleCard({
         </p>
 
         <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-          <span>{dict.cta.readMore}</span>
+          <span>{t.cta.readMore}</span>
           <ArrowUpRight
             className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
             aria-hidden="true"

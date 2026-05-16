@@ -1,18 +1,11 @@
 import Link from "next/link";
 import { MapPin, ArrowUpRight } from "lucide-react";
-import type { Locale } from "@/i18n/config";
 import type { ProjectFrontmatter } from "@/lib/content";
 
-export function ProjectCard({
-  locale,
-  project,
-}: {
-  locale: Locale;
-  project: ProjectFrontmatter;
-}) {
+export function ProjectCard({ project }: { project: ProjectFrontmatter }) {
   return (
     <Link
-      href={`/${locale}/proyek/${project.slug}`}
+      href={`/proyek/${project.slug}`}
       className="card-elevated card-hover group relative flex h-full flex-col overflow-hidden"
     >
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
@@ -32,13 +25,12 @@ export function ProjectCard({
           </>
         ) : (
           <div className="grid h-full w-full place-items-center bg-gradient-to-br from-slate-100 to-slate-200">
-            <span className="font-display text-xl font-semibold tracking-tight text-slate-300">
+            <span className="font-display text-5xl font-bold tracking-tight text-slate-300">
               {project.title.charAt(0)}
             </span>
           </div>
         )}
 
-        {/* Year chip */}
         <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold text-slate-900 shadow-soft-sm backdrop-blur">
           {project.year}
         </div>

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { defaultLocale } from "@/i18n/config";
 import { getSiteSettings } from "@/lib/content";
 
 export const metadata = {
@@ -21,17 +20,14 @@ export default function NotFound() {
           404
         </p>
         <h1 className="-mt-4 font-display text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          Page not found
+          Halaman tidak ditemukan
         </h1>
         <p className="mx-auto mt-4 max-w-md text-pretty text-slate-600">
-          The page you are looking for is unavailable or has been moved.
+          Halaman yang Anda cari tidak tersedia atau sudah dipindahkan.
         </p>
-        <Link
-          href={`/${defaultLocale}`}
-          className="btn-primary mt-8 h-12 px-6 text-sm"
-        >
+        <Link href="/" className="btn-primary mt-8 h-12 px-6 text-sm">
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-          Back to {settings.brandName}
+          Kembali ke {settings.brandName}
         </Link>
       </div>
     </main>

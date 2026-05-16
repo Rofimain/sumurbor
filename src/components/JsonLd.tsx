@@ -1,4 +1,3 @@
-import type { Locale } from "@/i18n/config";
 import type {
   ArticleFrontmatter,
   ProjectFrontmatter,
@@ -19,14 +18,14 @@ export function JsonLd({ data }: JsonLdProps) {
   );
 }
 
-export function localBusinessSchema(settings: SiteSettings, locale: Locale) {
+export function localBusinessSchema(settings: SiteSettings) {
   const sameAs = Object.values(settings.social).filter(Boolean);
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "@id": `${settings.siteUrl}#business`,
     name: settings.brandName,
-    description: settings.brandTagline[locale],
+    description: settings.brandTagline,
     url: settings.siteUrl,
     telephone: settings.phone,
     email: settings.email,

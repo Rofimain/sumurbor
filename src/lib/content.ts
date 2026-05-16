@@ -5,7 +5,6 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import remarkGfm from "remark-gfm";
 import remarkHtml from "remark-html";
-import type { Locale } from "@/i18n/config";
 import siteSettings from "../../content/settings/general.json";
 import aboutContent from "../../content/about/about.json";
 
@@ -18,8 +17,8 @@ export function getSiteSettings(): SiteSettings {
   return siteSettings;
 }
 
-export function getAboutContent(locale: Locale) {
-  return aboutContent[locale];
+export function getAboutContent(): AboutContent {
+  return aboutContent;
 }
 
 export interface ServiceFrontmatter {
@@ -89,10 +88,8 @@ async function readMarkdownFile<T>(filePath: string): Promise<ContentItem<T>> {
   };
 }
 
-export async function getServices(
-  locale: Locale,
-): Promise<ContentItem<ServiceFrontmatter>[]> {
-  const dir = path.join(CONTENT_ROOT, "services", locale);
+export async function getServices(): Promise<ContentItem<ServiceFrontmatter>[]> {
+  const dir = path.join(CONTENT_ROOT, "services");
   const files = readMarkdownDir(dir);
   const items = await Promise.all(
     files.map((f) =>
@@ -100,23 +97,19 @@ export async function getServices(
     ),
   );
   return items.sort(
-    (a, b) =>
-      (a.frontmatter.order ?? 99) - (b.frontmatter.order ?? 99),
+    (a, b) => (a.frontmatter.order ?? 99) - (b.frontmatter.order ?? 99),
   );
 }
 
 export async function getService(
-  locale: Locale,
   slug: string,
 ): Promise<ContentItem<ServiceFrontmatter> | null> {
-  const services = await getServices(locale);
+  const services = await getServices();
   return services.find((s) => s.frontmatter.slug === slug) ?? null;
 }
 
-export async function getArticles(
-  locale: Locale,
-): Promise<ContentItem<ArticleFrontmatter>[]> {
-  const dir = path.join(CONTENT_ROOT, "articles", locale);
+export async function getArticles(): Promise<ContentItem<ArticleFrontmatter>[]> {
+  const dir = path.join(CONTENT_ROOT, "articles");
   const files = readMarkdownDir(dir);
   const items = await Promise.all(
     files.map((f) =>
@@ -131,17 +124,14 @@ export async function getArticles(
 }
 
 export async function getArticle(
-  locale: Locale,
   slug: string,
 ): Promise<ContentItem<ArticleFrontmatter> | null> {
-  const articles = await getArticles(locale);
+  const articles = await getArticles();
   return articles.find((a) => a.frontmatter.slug === slug) ?? null;
 }
 
-export async function getProjects(
-  locale: Locale,
-): Promise<ContentItem<ProjectFrontmatter>[]> {
-  const dir = path.join(CONTENT_ROOT, "projects", locale);
+export async function getProjects(): Promise<ContentItem<ProjectFrontmatter>[]> {
+  const dir = path.join(CONTENT_ROOT, "projects");
   const files = readMarkdownDir(dir);
   const items = await Promise.all(
     files.map((f) =>
@@ -152,9 +142,14 @@ export async function getProjects(
 }
 
 export async function getProject(
-  locale: Locale,
   slug: string,
 ): Promise<ContentItem<ProjectFrontmatter> | null> {
-  const projects = await getProjects(locale);
+  const projects = await getProjects();
   return projects.find((p) => p.frontmatter.slug === slug) ?? null;
+}
+
+export function whatsappUrl(phone: string, message?: string): string {
+  const cleaned = phone.replace(/[^0-9]/g, "");
+  const text = message ? `?text=${encodeURIComponent(message)}` : "";
+  return `https://wa.me/${cleaned}${text}`;
 }

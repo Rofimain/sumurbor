@@ -1,21 +1,19 @@
 import Link from "next/link";
-import type { Locale } from "@/i18n/config";
 import type { SiteSettings } from "@/lib/content";
 
 interface LogoProps {
   settings: SiteSettings;
-  locale: Locale;
   variant?: "default" | "light";
 }
 
-export function Logo({ settings, locale, variant = "default" }: LogoProps) {
+export function Logo({ settings, variant = "default" }: LogoProps) {
   const src = variant === "light" ? settings.logoLight || settings.logo : settings.logo;
   const useImage = src && src.trim().length > 0;
   const isLight = variant === "light";
 
   return (
     <Link
-      href={`/${locale}`}
+      href="/"
       className="group inline-flex items-center gap-2.5 font-display font-semibold tracking-tight"
       aria-label={settings.brandName}
     >
@@ -50,7 +48,7 @@ export function Logo({ settings, locale, variant = "default" }: LogoProps) {
             isLight ? "text-white/60" : "text-slate-400"
           }`}
         >
-          {settings.brandTagline[locale]?.split(" ").slice(0, 3).join(" ") || "Drilling"}
+          {settings.brandTagline?.split(" ").slice(0, 3).join(" ") || "Drilling"}
         </span>
       </span>
     </Link>

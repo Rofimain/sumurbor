@@ -1,32 +1,27 @@
 import Link from "next/link";
 import { ArrowRight, Phone } from "lucide-react";
-import type { Locale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/getDictionary";
+import { t } from "@/lib/strings";
 import type { SiteSettings } from "@/lib/content";
 import { Logo } from "./Logo";
-import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface HeaderProps {
-  locale: Locale;
   settings: SiteSettings;
-  pathSegments?: string[];
 }
 
-export function Header({ locale, settings, pathSegments = [] }: HeaderProps) {
-  const dict = getDictionary(locale);
+export function Header({ settings }: HeaderProps) {
   const nav = [
-    { href: `/${locale}`, label: dict.nav.home },
-    { href: `/${locale}/tentang`, label: dict.nav.about },
-    { href: `/${locale}/layanan`, label: dict.nav.services },
-    { href: `/${locale}/proyek`, label: dict.nav.projects },
-    { href: `/${locale}/artikel`, label: dict.nav.articles },
-    { href: `/${locale}/kontak`, label: dict.nav.contact },
+    { href: "/", label: t.nav.home },
+    { href: "/tentang", label: t.nav.about },
+    { href: "/layanan", label: t.nav.services },
+    { href: "/proyek", label: t.nav.projects },
+    { href: "/artikel", label: t.nav.articles },
+    { href: "/kontak", label: t.nav.contact },
   ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/60 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/65">
       <div className="container flex h-20 items-center justify-between gap-6">
-        <Logo settings={settings} locale={locale} />
+        <Logo settings={settings} />
 
         <nav className="hidden items-center gap-8 text-sm lg:flex">
           {nav.map((item) => (
@@ -44,12 +39,11 @@ export function Header({ locale, settings, pathSegments = [] }: HeaderProps) {
             <Phone className="h-4 w-4 text-brand-500" aria-hidden="true" />
             <span>{settings.phoneDisplay}</span>
           </a>
-          <LanguageSwitcher currentLocale={locale} pathSegments={pathSegments} />
           <Link
-            href={`/${locale}/kontak`}
+            href="/kontak"
             className="btn-primary hidden h-10 px-4 text-xs sm:inline-flex"
           >
-            {dict.cta.quote}
+            {t.cta.quote}
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
         </div>

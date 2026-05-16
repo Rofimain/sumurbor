@@ -1,5 +1,33 @@
 {
+  "brandName": "Rofimain Drilling",
+  "brandTagline": "Spesialis sumur bor & pondasi bor pile",
+  "logo": "/images/branding/logo.svg",
+  "logoLight": "/images/branding/logo.svg",
+  "favicon": "/favicon.ico",
+  "ogImage": "",
   "primaryColor": "#0ea5e9",
+  "siteUrl": "https://sumurbor.rofimain.com",
+  "phone": "+62 812 3456 7890",
+  "phoneDisplay": "+62 812-3456-7890",
+  "whatsapp": "6281234567890",
+  "email": "halo@sumurbor.rofimain.com",
+  "address": {
+    "street": "Jl. Contoh No. 123",
+    "district": "Kebayoran Baru",
+    "city": "Jakarta Selatan",
+    "region": "DKI Jakarta",
+    "postalCode": "12110",
+    "country": "ID"
+  },
+  "googleMapsUrl": "https://maps.google.com/?q=-6.244,106.800",
+  "businessHours": "Senin–Sabtu, 08.00–17.00 WIB",
+  "social": {
+    "instagram": "https://instagram.com/rofimain",
+    "facebook": "",
+    "linkedin": "",
+    "youtube": "",
+    "tiktok": ""
+  },
   "areaServed": [
     "Jakarta",
     "Bogor",
@@ -9,39 +37,5 @@
     "Bandung",
     "Surabaya"
   ],
-  "ogImage": "/images/uploads/screenshot-2026-05-16-at-07.04.07.png",
-  "brandTagline": {
-    "id": "Spesialis sumur bor & pondasi bor pile",
-    "en": "Water well & bored pile specialists"
-  },
-  "siteUrl": "https://sumurbor.rofimain.com",
-  "logo": "/images/branding/logo.svg",
-  "logoLight": "/images/branding/logo.svg",
-  "social": {
-    "instagram": "https://instagram.com/rofimain",
-    "facebook": "",
-    "linkedin": "",
-    "youtube": "",
-    "tiktok": ""
-  },
-  "phone": "+62 812 3456 7890",
-  "businessHours": {
-    "id": "Senin–Sabtu, 08.00–17.00 WIB",
-    "en": "Mon–Sat, 8 AM – 5 PM WIB"
-  },
-  "whatsapp": "6281234567890",
-  "brandName": "Rofimain Drilling",
-  "favicon": "/favicon.ico",
-  "phoneDisplay": "+62 812-3456-7890",
-  "address": {
-    "street": "Jl. Contoh No. 123",
-    "district": "Kebayoran Baru",
-    "city": "Jakarta Selatan",
-    "region": "DKI Jakarta",
-    "postalCode": "12110",
-    "country": "ID"
-  },
-  "email": "halo@sumurbor.rofimain.com",
-  "foundingYear": 2015,
-  "googleMapsUrl": "https://maps.google.com/?q=-6.244,106.800"
+  "foundingYear": 2015
 }

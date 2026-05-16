@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { locales } from "@/i18n/config";
 import {
   getArticles,
   getProjects,
@@ -16,66 +15,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = settings.siteUrl.replace(/\/$/, "");
   const entries: MetadataRoute.Sitemap = [];
 
-  for (const lang of locales) {
-    for (const p of staticPaths) {
-      const url = p ? `${base}/${lang}/${p}` : `${base}/${lang}`;
-      const alternates: Record<string, string> = {};
-      for (const l of locales) {
-        alternates[l] = p ? `${base}/${l}/${p}` : `${base}/${l}`;
-      }
-      entries.push({
-        url,
-        lastModified: new Date(),
-        changeFrequency: p === "" ? "weekly" : "monthly",
-        priority: p === "" ? 1 : 0.7,
-        alternates: { languages: alternates },
-      });
-    }
+  for (const p of staticPaths) {
+    entries.push({
+      url: p ? `${base}/${p}` : `${base}/`,
+      lastModified: new Date(),
+      changeFrequency: p === "" ? "weekly" : "monthly",
+      priority: p === "" ? 1 : 0.7,
+    });
+  }
 
-    const services = await getServices(lang);
-    for (const s of services) {
-      const alternates: Record<string, string> = {};
-      for (const l of locales) {
-        alternates[l] = `${base}/${l}/layanan/${s.frontmatter.slug}`;
-      }
-      entries.push({
-        url: `${base}/${lang}/layanan/${s.frontmatter.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly",
-        priority: 0.8,
-        alternates: { languages: alternates },
-      });
-    }
+  const services = await getServices();
+  for (const s of services) {
+    entries.push({
+      url: `${base}/layanan/${s.frontmatter.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    });
+  }
 
-    const articles = await getArticles(lang);
-    for (const a of articles) {
-      const alternates: Record<string, string> = {};
-      for (const l of locales) {
-        alternates[l] = `${base}/${l}/artikel/${a.frontmatter.slug}`;
-      }
-      entries.push({
-        url: `${base}/${lang}/artikel/${a.frontmatter.slug}`,
-        lastModified: new Date(a.frontmatter.date),
-        changeFrequency: "yearly",
-        priority: 0.6,
-        alternates: { languages: alternates },
-      });
-    }
+  const articles = await getArticles();
+  for (const a of articles) {
+    entries.push({
+      url: `${base}/artikel/${a.frontmatter.slug}`,
+      lastModified: new Date(a.frontmatter.date),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    });
+  }
 
-    const projects = await getProjects(lang);
-    for (const p of projects) {
-      const alternates: Record<string, string> = {};
-      for (const l of locales) {
-        alternates[l] = `${base}/${l}/proyek/${p.frontmatter.slug}`;
-      }
-      entries.push({
-        url: `${base}/${lang}/proyek/${p.frontmatter.slug}`,
-        lastModified: new Date(`${p.frontmatter.year}-01-01`),
-        changeFrequency: "yearly",
-        priority: 0.6,
-        alternates: { languages: alternates },
-      });
-    }
+  const projects = await getProjects();
+  for (const p of projects) {
+    entries.push({
+      url: `${base}/proyek/${p.frontmatter.slug}`,
+      lastModified: new Date(`${p.frontmatter.year}-01-01`),
+      changeFrequency: "yearly",
+      priority: 0.6,
+    });
   }
 
   return entries;
