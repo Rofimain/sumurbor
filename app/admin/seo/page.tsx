@@ -10,8 +10,10 @@ import {
   FileText,
   Bot,
   Link2,
+  BarChart3,
 } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { normalizeGa4Id, normalizeGtmId } from "@/lib/analytics";
 import { SEO_SETTING_KEYS } from "@/lib/seo-settings";
 
 type SeoStats = {
@@ -333,11 +335,74 @@ export default function AdminSeoPage() {
       <section className="card-elevated p-6">
         <header>
           <h2 className="flex items-center gap-2 font-heading text-lg font-semibold text-ink">
-            <Globe className="h-4 w-4 text-brand-600" aria-hidden="true" />
-            Search Console
+            <BarChart3 className="h-4 w-4 text-brand-600" aria-hidden="true" />
+            Google Analytics & Tag Manager
           </h2>
           <p className="mt-1 text-sm text-ink-muted">
-            Kode verifikasi kepemilikan domain (meta tag).
+            Lacak pengunjung website. Script hanya dimuat di halaman publik (bukan
+            admin). Data juga membantu evaluasi traffic dari mesin pencari & AI.
+          </p>
+        </header>
+        <div className="mt-5 space-y-4">
+          <Toggle
+            checked={bool("analytics_enabled")}
+            onChange={(v) => setBool("analytics_enabled", v)}
+            label="Aktifkan tracking analytics"
+            description="Matikan sementara tanpa menghapus ID yang sudah disimpan."
+          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="field-label">Google Analytics 4 (Measurement ID)</span>
+              <input
+                className="field font-mono text-xs"
+                value={data.google_analytics_id || ""}
+                onChange={(e) => set("google_analytics_id", e.target.value)}
+                placeholder="G-XXXXXXXXXX"
+              />
+              {data.google_analytics_id && (
+                <p className="mt-1.5 text-xs text-ink-subtle">
+                  Terdeteksi:{" "}
+                  <span className="font-mono font-semibold text-brand-700">
+                    {normalizeGa4Id(data.google_analytics_id) || "format tidak valid"}
+                  </span>
+                </p>
+              )}
+              <p className="mt-1 text-xs text-ink-subtle">
+                Ambil dari Google Analytics → Admin → Data Streams → Measurement ID.
+              </p>
+            </label>
+            <label className="block text-sm">
+              <span className="field-label">Google Tag Manager (opsional)</span>
+              <input
+                className="field font-mono text-xs"
+                value={data.google_tag_manager_id || ""}
+                onChange={(e) => set("google_tag_manager_id", e.target.value)}
+                placeholder="GTM-XXXXXXX"
+              />
+              {data.google_tag_manager_id && (
+                <p className="mt-1.5 text-xs text-ink-subtle">
+                  Terdeteksi:{" "}
+                  <span className="font-mono font-semibold text-brand-700">
+                    {normalizeGtmId(data.google_tag_manager_id) || "format tidak valid"}
+                  </span>
+                </p>
+              )}
+              <p className="mt-1 text-xs text-ink-subtle">
+                Isi hanya jika pakai GTM. Bisa dikosongkan jika cukup GA4 saja.
+              </p>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section className="card-elevated p-6">
+        <header>
+          <h2 className="flex items-center gap-2 font-heading text-lg font-semibold text-ink">
+            <Globe className="h-4 w-4 text-brand-600" aria-hidden="true" />
+            Search Console & Webmaster
+          </h2>
+          <p className="mt-1 text-sm text-ink-muted">
+            Verifikasi kepemilikan domain (meta tag) — Google & Bing.
           </p>
         </header>
         <SeoVerificationFields data={data} set={set} />
@@ -358,6 +423,10 @@ export default function AdminSeoPage() {
           <li>
             Gambar di isi artikel: pakai tombol &quot;Tambah gambar ke isi konten&quot;
             di editor Artikel + isi alt text.
+          </li>
+          <li>
+            Google Analytics: isi Measurement ID (G-...) di atas, simpan, lalu cek
+            Realtime di dashboard GA dalam 1–2 menit.
           </li>
         </ul>
       </section>

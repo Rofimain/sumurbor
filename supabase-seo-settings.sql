@@ -15,5 +15,8 @@ insert into settings (key, value) values
   ('robots_disallow_extra', ''),
   ('seo_global_noindex', 'false'),
   ('google_site_verification', ''),
-  ('bing_site_verification', '')
+  ('bing_site_verification', ''),
+  ('analytics_enabled', 'true'),
+  ('google_analytics_id', ''),
+  ('google_tag_manager_id', '')
 on conflict (key) do nothing;

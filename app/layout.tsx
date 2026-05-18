@@ -8,6 +8,8 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/ui/JsonLd";
+import { AnalyticsScripts, GtmNoScript } from "@/components/ui/AnalyticsScripts";
+import { getAnalyticsConfig } from "@/lib/analytics";
 import { getSettings } from "@/lib/db";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -140,9 +142,10 @@ export default async function RootLayout({
   const isAdmin = pathname.startsWith("/admin");
 
   // Merge DB settings on top of static fallback (best-effort)
-  const dbSettings: Record<string, string> = await getSettings().catch(
-    () => ({}) as Record<string, string>,
-  );
+  const [dbSettings, analytics] = await Promise.all([
+    getSettings().catch(() => ({}) as Record<string, string>),
+    getAnalyticsConfig(),
+  ]);
 
   const settings = {
     brandName: dbSettings.site_name || siteConfig.brandName,
@@ -176,6 +179,15 @@ export default async function RootLayout({
       className={`${playfair.variable} ${dmSans.variable} ${spaceMono.variable}`}
     >
       <body>
+        {!isAdmin && analytics.enabled && (
+          <GtmNoScript gtmId={analytics.gtmId} />
+        )}
+        {!isAdmin && analytics.enabled && (
+          <AnalyticsScripts
+            ga4Id={analytics.ga4Id}
+            gtmId={analytics.gtmId}
+          />
+        )}
         {!isAdmin && (
           <JsonLd
             data={[
