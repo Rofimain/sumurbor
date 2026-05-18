@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Image as ImageIcon,
   Settings,
+  Search,
   LogOut,
   ChevronRight,
   ExternalLink,
@@ -25,6 +26,7 @@ const NAV = [
   { href: "/admin/tim", label: "Tim", icon: Users },
   { href: "/admin/testimoni", label: "Testimoni", icon: MessageSquare },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
+  { href: "/admin/seo", label: "SEO", icon: Search },
   { href: "/admin/pengaturan", label: "Pengaturan", icon: Settings },
 ];
 

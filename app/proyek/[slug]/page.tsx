@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Images, MapPin, Calendar, Clock, User, Building2 } from "lucide-react";
 import { buildMetadata, siteUrl } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getProject, getProjects } from "@/lib/db";
 import { resolveSlugParam } from "@/lib/route-params";
 import { siteConfig } from "@/data";
@@ -27,11 +28,17 @@ export async function generateMetadata({
   const slug = await resolveSlugParam(params);
   const project = await getProject(slug);
   if (!project) return {};
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
   return buildMetadata({
     title: project.title,
     description: project.description || project.title,
     pathSegments: ["proyek", slug],
     ogImage: project.cover_image || undefined,
+    canonicalBase,
+    noindex: seo.globalNoindex,
   });
 }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
-import { buildMetadata, siteUrl } from "@/lib/seo";
+import { buildMetadata } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getSettings } from "@/lib/db";
 import { siteConfig } from "@/data";
 import { whatsappUrl } from "@/lib/utils";
@@ -10,16 +11,24 @@ import { JsonLd, breadcrumbSchema } from "@/components/ui/JsonLd";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = buildMetadata({
-  title: "Kontak",
-  description:
-    "Konsultasi awal gratis untuk proyek pondasi bor pile, sumur bor, atau strauss pile.",
-  pathSegments: ["kontak"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
+  return buildMetadata({
+    title: "Kontak",
+    description:
+      "Konsultasi awal gratis untuk proyek pondasi bor pile, sumur bor, atau strauss pile.",
+    pathSegments: ["kontak"],
+    canonicalBase,
+    noindex: seo.globalNoindex,
+  });
+}
 
 export default async function ContactPage() {
   const dbSettings = await getSettings();
-  const base = siteUrl();
+  const base = await getCanonicalBase();
 
   const settings = {
     brandName: dbSettings.site_name || siteConfig.brandName,

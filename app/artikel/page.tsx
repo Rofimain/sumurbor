@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { buildMetadata, siteUrl } from "@/lib/seo";
+import { buildMetadata } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getArticles } from "@/lib/db";
 import { PageHero } from "@/components/ui/PageHero";
 import { ArticleCard } from "@/components/ui/ArticleCard";
@@ -7,16 +8,24 @@ import { JsonLd, breadcrumbSchema } from "@/components/ui/JsonLd";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = buildMetadata({
-  title: "Artikel",
-  description:
-    "Panduan teknis, tips memilih jasa pondasi, dan update industri sumur bor & bor pile.",
-  pathSegments: ["artikel"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
+  return buildMetadata({
+    title: "Artikel",
+    description:
+      "Panduan teknis, tips memilih jasa pondasi, dan update industri sumur bor & bor pile.",
+    pathSegments: ["artikel"],
+    canonicalBase,
+    noindex: seo.globalNoindex,
+  });
+}
 
 export default async function ArticlesPage() {
   const articles = await getArticles({ published: true });
-  const base = siteUrl();
+  const base = await getCanonicalBase();
 
   return (
     <>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { buildMetadata, siteUrl } from "@/lib/seo";
+import { buildMetadata } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getProjects } from "@/lib/db";
 import { PageHero } from "@/components/ui/PageHero";
 import { ProjectCard } from "@/components/ui/ProjectCard";
@@ -7,16 +8,24 @@ import { JsonLd, breadcrumbSchema } from "@/components/ui/JsonLd";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = buildMetadata({
-  title: "Proyek",
-  description:
-    "Portofolio proyek bored pile, sumur bor dalam, dan strauss pile yang sudah kami selesaikan.",
-  pathSegments: ["proyek"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
+  return buildMetadata({
+    title: "Proyek",
+    description:
+      "Portofolio proyek bored pile, sumur bor dalam, dan strauss pile yang sudah kami selesaikan.",
+    pathSegments: ["proyek"],
+    canonicalBase,
+    noindex: seo.globalNoindex,
+  });
+}
 
 export default async function ProjectsPage() {
   const projects = await getProjects();
-  const base = siteUrl();
+  const base = await getCanonicalBase();
 
   return (
     <>

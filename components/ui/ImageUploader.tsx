@@ -7,6 +7,8 @@ interface ImageUploaderProps {
   folder?: string;
   onChange: (url: string) => void;
   className?: string;
+  /** Alt text for preview img (SEO hint for editors) */
+  previewAlt?: string;
 }
 
 export function ImageUploader({
@@ -14,6 +16,7 @@ export function ImageUploader({
   folder = "misc",
   onChange,
   className = "",
+  previewAlt = "Preview",
 }: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +52,7 @@ export function ImageUploader({
         <div className="relative overflow-hidden rounded-xl border border-surface-line bg-surface-alt">
           <img
             src={value}
-            alt="Preview"
+            alt={previewAlt}
             className="aspect-video w-full object-cover"
           />
           <button

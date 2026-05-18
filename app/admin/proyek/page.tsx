@@ -7,6 +7,7 @@ import {
   ImageUploader,
   MultiImageUploader,
 } from "@/components/ui/ImageUploader";
+import { MarkdownImageInserter } from "@/components/admin/MarkdownImageInserter";
 import { slugify } from "@/lib/utils";
 import type { ProjectRow } from "@/lib/supabase";
 
@@ -310,9 +311,18 @@ export default function AdminProyek() {
             />
           </Field>
           <Field label="Detail proyek (paragraf dipisah baris kosong)">
+            <MarkdownImageInserter
+              textareaId="project-full-description"
+              value={draft.full_description || ""}
+              onChange={(full_description) =>
+                setDraft({ ...draft, full_description })
+              }
+              folder="projects"
+            />
             <textarea
+              id="project-full-description"
               rows={6}
-              className="field resize-y font-mono text-xs"
+              className="field mt-3 resize-y font-mono text-xs"
               value={draft.full_description || ""}
               onChange={(e) =>
                 setDraft({ ...draft, full_description: e.target.value })

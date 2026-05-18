@@ -9,6 +9,8 @@ interface BuildMetadataInput {
   type?: "website" | "article";
   publishedTime?: string;
   noindex?: boolean;
+  /** Override canonical base URL (from dashboard SEO settings) */
+  canonicalBase?: string;
 }
 
 export function siteUrl(): string {
@@ -25,8 +27,9 @@ export function buildMetadata({
   type = "website",
   publishedTime,
   noindex,
+  canonicalBase,
 }: BuildMetadataInput): Metadata {
-  const base = siteUrl();
+  const base = (canonicalBase || siteUrl()).replace(/\/$/, "");
   const url = base + (pathSegments.length ? "/" + pathSegments.join("/") : "/");
   const image = ogImage || siteConfig.ogImage;
 

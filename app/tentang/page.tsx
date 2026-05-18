@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CheckCircle2, Award, Target, Compass } from "lucide-react";
-import { buildMetadata, siteUrl } from "@/lib/seo";
+import { buildMetadata } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getTeam } from "@/lib/db";
 import { siteConfig, values, certifications, stats } from "@/data";
 import { PageHero } from "@/components/ui/PageHero";
@@ -8,15 +9,23 @@ import { JsonLd, breadcrumbSchema } from "@/components/ui/JsonLd";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = buildMetadata({
-  title: "Tentang Kami",
-  description: `Mitra pondasi tepercaya sejak ${siteConfig.foundingYear}. ${siteConfig.description}`,
-  pathSegments: ["tentang"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
+  return buildMetadata({
+    title: "Tentang Kami",
+    description: `Mitra pondasi tepercaya sejak ${siteConfig.foundingYear}. ${siteConfig.description}`,
+    pathSegments: ["tentang"],
+    canonicalBase,
+    noindex: seo.globalNoindex,
+  });
+}
 
 export default async function AboutPage() {
   const team = await getTeam();
-  const base = siteUrl();
+  const base = await getCanonicalBase();
 
   return (
     <>

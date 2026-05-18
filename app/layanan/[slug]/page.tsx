@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CheckCircle2, ChevronDown, HelpCircle, ArrowRight } from "lucide-react";
 import { buildMetadata, siteUrl } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getService, getServices } from "@/lib/db";
 import { resolveSlugParam } from "@/lib/route-params";
 import { siteConfig } from "@/data";
@@ -34,11 +35,17 @@ export async function generateMetadata({
   const slug = await resolveSlugParam(params);
   const service = await getService(slug);
   if (!service) return {};
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
   return buildMetadata({
     title: service.title,
     description: service.description || service.title,
     pathSegments: ["layanan", slug],
     ogImage: service.cover_image || undefined,
+    canonicalBase,
+    noindex: seo.globalNoindex,
   });
 }
 

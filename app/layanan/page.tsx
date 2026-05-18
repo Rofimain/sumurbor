@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { buildMetadata, siteUrl } from "@/lib/seo";
+import { buildMetadata } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getServices } from "@/lib/db";
 import { PageHero } from "@/components/ui/PageHero";
 import { ServiceCard } from "@/components/ui/ServiceCard";
@@ -7,16 +8,24 @@ import { JsonLd, breadcrumbSchema } from "@/components/ui/JsonLd";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = buildMetadata({
-  title: "Layanan",
-  description:
-    "Layanan lengkap pondasi bor pile, sumur bor dalam, dan strauss pile dengan tim bersertifikat.",
-  pathSegments: ["layanan"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
+  return buildMetadata({
+    title: "Layanan",
+    description:
+      "Layanan lengkap pondasi bor pile, sumur bor dalam, dan strauss pile dengan tim bersertifikat.",
+    pathSegments: ["layanan"],
+    canonicalBase,
+    noindex: seo.globalNoindex,
+  });
+}
 
 export default async function ServicesPage() {
   const services = await getServices();
-  const base = siteUrl();
+  const base = await getCanonicalBase();
 
   return (
     <>

@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, Loader2, Eye, EyeOff } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Drawer } from "@/components/admin/Drawer";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { MarkdownImageInserter } from "@/components/admin/MarkdownImageInserter";
 import { formatDateShort, slugify } from "@/lib/utils";
 import type { ArticleRow } from "@/lib/supabase";
 
@@ -204,10 +205,17 @@ export default function AdminArtikel() {
               }
             />
           </Field>
-          <Field label="Konten (markdown sederhana: ## H2, ### H3, - list, > quote)">
+          <Field label="Konten (## H2, ### H3, - list, > quote, ![alt](url) untuk gambar)">
+            <MarkdownImageInserter
+              textareaId="article-content"
+              value={draft.content || ""}
+              onChange={(content) => setDraft({ ...draft, content })}
+              folder="articles"
+            />
             <textarea
+              id="article-content"
               rows={14}
-              className="field resize-y font-mono text-xs"
+              className="field mt-3 resize-y font-mono text-xs"
               value={draft.content || ""}
               onChange={(e) =>
                 setDraft({ ...draft, content: e.target.value })
@@ -285,11 +293,16 @@ export default function AdminArtikel() {
               }
             />
           </Field>
-          <Field label="Cover image">
+          <Field label="Cover image (featured / thumbnail)">
+            <p className="mb-2 text-xs text-ink-subtle">
+              Tampil di kartu artikel & bagian atas halaman. Alt otomatis dari judul
+              artikel.
+            </p>
             <ImageUploader
               folder="articles"
               value={draft.cover_image || ""}
               onChange={(url) => setDraft({ ...draft, cover_image: url })}
+              previewAlt={draft.title || "Cover artikel"}
             />
           </Field>
           <div className="flex items-center gap-6 text-sm">

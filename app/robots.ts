@@ -1,17 +1,8 @@
 import type { MetadataRoute } from "next";
-import { siteUrl } from "@/lib/seo";
+import { buildRobotsConfig } from "@/lib/seo-settings";
 
-export default function robots(): MetadataRoute.Robots {
-  const base = siteUrl();
-  return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/admin/", "/api/", "/_next/"],
-      },
-    ],
-    sitemap: `${base}/sitemap.xml`,
-    host: base || undefined,
-  };
+export const revalidate = 60;
+
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  return buildRobotsConfig();
 }

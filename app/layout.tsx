@@ -19,7 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = db.description || siteConfig.description;
   const favicon = db.favicon || siteConfig.favicon || "/favicon.ico";
   const ogImage = db.og_image || siteConfig.ogImage;
-  const base = siteUrl();
+  const base = (db.canonical_url?.trim() || siteUrl()).replace(/\/$/, "");
+  const globalNoindex = db.seo_global_noindex === "true";
   const googleVerify = db.google_site_verification || process.env.GOOGLE_SITE_VERIFICATION;
   const bingVerify = db.bing_site_verification || process.env.BING_SITE_VERIFICATION;
 
@@ -66,17 +67,19 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: ogImage ? [ogImage] : undefined,
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-        "max-video-preview": -1,
-      },
-    },
+    robots: globalNoindex
+      ? { index: false, follow: false }
+      : {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            "max-image-preview": "large",
+            "max-snippet": -1,
+            "max-video-preview": -1,
+          },
+        },
     icons: {
       icon: favicon,
       shortcut: favicon,

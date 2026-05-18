@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Calendar, Clock, User } from "lucide-react";
 import { buildMetadata, siteUrl } from "@/lib/seo";
+import { getCanonicalBase, getSeoConfig } from "@/lib/seo-settings";
 import { getArticle, getArticles } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
 import { resolveSlugParam } from "@/lib/route-params";
@@ -32,6 +33,10 @@ export async function generateMetadata({
   const slug = await resolveSlugParam(params);
   const article = await getArticle(slug);
   if (!article) return {};
+  const [canonicalBase, seo] = await Promise.all([
+    getCanonicalBase(),
+    getSeoConfig(),
+  ]);
   return buildMetadata({
     title: article.title,
     description: article.excerpt || article.title,
@@ -39,6 +44,8 @@ export async function generateMetadata({
     ogImage: article.cover_image || undefined,
     type: "article",
     publishedTime: article.published_at || undefined,
+    canonicalBase,
+    noindex: seo.globalNoindex,
   });
 }
 

@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, Loader2, Star } from "lucide-react";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Drawer } from "@/components/admin/Drawer";
 import { ImageUploader } from "@/components/ui/ImageUploader";
+import { MarkdownImageInserter } from "@/components/admin/MarkdownImageInserter";
 import { SERVICE_ICON_OPTIONS } from "@/components/ui/ServiceIcon";
 import { slugify } from "@/lib/utils";
 import type { ServiceRow } from "@/lib/supabase";
@@ -207,9 +208,18 @@ export default function AdminLayanan() {
             />
           </Field>
           <Field label="Deskripsi lengkap (paragraf dipisah baris kosong)">
+            <MarkdownImageInserter
+              textareaId="service-full-description"
+              value={draft.full_description || ""}
+              onChange={(full_description) =>
+                setDraft({ ...draft, full_description })
+              }
+              folder="services"
+            />
             <textarea
+              id="service-full-description"
               rows={6}
-              className="field resize-y font-mono text-xs"
+              className="field mt-3 resize-y font-mono text-xs"
               value={draft.full_description || ""}
               onChange={(e) =>
                 setDraft({ ...draft, full_description: e.target.value })

@@ -165,5 +165,19 @@ insert into settings (key, value) values
   ('linkedin',      ''),
   ('youtube',       ''),
   ('tiktok',        ''),
-  ('google_maps_url','https://maps.google.com/?q=-6.244,106.800')
+  ('google_maps_url','https://maps.google.com/?q=-6.244,106.800'),
+  ('canonical_url', ''),
+  ('sitemap_enabled', 'true'),
+  ('sitemap_include_services', 'true'),
+  ('sitemap_include_projects', 'true'),
+  ('sitemap_include_articles', 'true'),
+  ('sitemap_extra_urls', ''),
+  ('sitemap_priority_home', '1'),
+  ('sitemap_changefreq_home', 'weekly'),
+  ('sitemap_priority_static', '0.7'),
+  ('sitemap_changefreq_static', 'monthly'),
+  ('robots_disallow_extra', ''),
+  ('seo_global_noindex', 'false'),
+  ('google_site_verification', ''),
+  ('bing_site_verification', '')
 on conflict (key) do nothing;
