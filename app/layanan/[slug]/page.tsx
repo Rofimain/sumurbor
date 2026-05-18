@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import { CheckCircle2, ChevronDown, HelpCircle, ArrowRight } from "lucide-react";
 import { buildMetadata, siteUrl } from "@/lib/seo";
 import { getService, getServices } from "@/lib/db";
+import { resolveSlugParam } from "@/lib/route-params";
 import { siteConfig } from "@/data";
 import { PageHero } from "@/components/ui/PageHero";
 import { ServiceIcon } from "@/components/ui/ServiceIcon";
+import { ContentRenderer } from "@/components/ui/ContentRenderer";
 import {
   JsonLd,
   breadcrumbSchema,
@@ -14,37 +16,38 @@ import {
   serviceSchema,
 } from "@/components/ui/JsonLd";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const services = await getServices();
+  const services = await getServices().catch(() => []);
   return services.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const slug = await resolveSlugParam(params);
   const service = await getService(slug);
   if (!service) return {};
   return buildMetadata({
     title: service.title,
-    description: service.description,
+    description: service.description || service.title,
     pathSegments: ["layanan", slug],
     ogImage: service.cover_image || undefined,
   });
 }
 
 export default async function ServiceDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+  const slug = await resolveSlugParam(params);
   const service = await getService(slug);
   if (!service) notFound();
   const base = siteUrl();
-  const url = `${base}/layanan/${slug}`;
+  const url = base ? `${base}/layanan/${slug}` : `/layanan/${slug}`;
 
   return (
     <>
@@ -59,12 +62,12 @@ export default async function ServiceDetailPage({ params }: PageProps) {
       />
       <JsonLd
         data={breadcrumbSchema([
-          { name: "Beranda", url: `${base}/` },
-          { name: "Layanan", url: `${base}/layanan` },
+          { name: "Beranda", url: base ? `${base}/` : "/" },
+          { name: "Layanan", url: base ? `${base}/layanan` : "/layanan" },
           { name: service.title, url },
         ])}
       />
-      {service.faq?.length > 0 && <JsonLd data={faqSchema(service.faq)} />}
+      {service.faq.length > 0 && <JsonLd data={faqSchema(service.faq)} />}
 
       <PageHero
         eyebrow="Layanan"
@@ -104,7 +107,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
 
             <ContentRenderer text={service.full_description || service.description} />
 
-            {service.process?.length > 0 && (
+            {service.process.length > 0 && (
               <>
                 <h2>Tahapan Pekerjaan</h2>
                 <ol className="not-prose mt-4 space-y-3">
@@ -132,7 +135,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           </article>
 
           <aside className="space-y-5 lg:sticky lg:top-28 lg:self-start">
-            {service.features?.length > 0 && (
+            {service.features.length > 0 && (
               <div className="card-elevated p-6">
                 <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-brand-700">
                   Spesifikasi
@@ -177,7 +180,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {service.faq?.length > 0 && (
+      {service.faq.length > 0 && (
         <section className="border-t border-surface-line bg-surface-alt/60 py-16 sm:py-20">
           <div className="container-page max-w-3xl">
             <div className="text-center">
@@ -210,24 +213,6 @@ export default async function ServiceDetailPage({ params }: PageProps) {
             </div>
           </div>
         </section>
-      )}
-    </>
-  );
-}
-
-// Renders newline-separated paragraphs (simple, no markdown lib needed)
-function ContentRenderer({ text }: { text: string }) {
-  if (!text) return null;
-  return (
-    <>
-      {text.split(/\n\s*\n/).map((para, i) =>
-        para.startsWith("## ") ? (
-          <h2 key={i}>{para.replace(/^##\s*/, "")}</h2>
-        ) : para.startsWith("### ") ? (
-          <h3 key={i}>{para.replace(/^###\s*/, "")}</h3>
-        ) : (
-          <p key={i}>{para}</p>
-        ),
       )}
     </>
   );

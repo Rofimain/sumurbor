@@ -7,6 +7,76 @@ import {
   type TeamRow,
   type TestimonialRow,
 } from "./supabase";
+import {
+  asBoolean,
+  asNumber,
+  asObjectArray,
+  asString,
+  asStringArray,
+} from "./normalize";
+
+function normalizeProject(row: ProjectRow): ProjectRow {
+  return {
+    ...row,
+    title: asString(row.title),
+    subtitle: asString(row.subtitle),
+    slug: asString(row.slug),
+    category: asString(row.category),
+    location: asString(row.location),
+    depth: asString(row.depth),
+    diameter: asString(row.diameter),
+    piles: row.piles == null ? null : asNumber(row.piles, 0),
+    duration: asString(row.duration),
+    year: asNumber(row.year, new Date().getFullYear()),
+    status: row.status ?? "completed",
+    client: asString(row.client),
+    description: asString(row.description),
+    full_description: asString(row.full_description),
+    cover_image: row.cover_image ?? null,
+    images: asStringArray(row.images),
+    tags: asStringArray(row.tags),
+    featured: asBoolean(row.featured),
+  };
+}
+
+function normalizeService(row: ServiceRow): ServiceRow {
+  return {
+    ...row,
+    title: asString(row.title),
+    subtitle: asString(row.subtitle),
+    slug: asString(row.slug),
+    description: asString(row.description),
+    full_description: asString(row.full_description),
+    icon: asString(row.icon, "Drill"),
+    cover_image: row.cover_image ?? null,
+    features: asStringArray(row.features),
+    process: asObjectArray<{ step: number; title: string; description: string }>(
+      row.process,
+    ),
+    faq: asObjectArray<{ q: string; a: string }>(row.faq),
+    featured: asBoolean(row.featured),
+    order: asNumber(row.order),
+  };
+}
+
+function normalizeArticle(row: ArticleRow): ArticleRow {
+  return {
+    ...row,
+    title: asString(row.title),
+    slug: asString(row.slug),
+    excerpt: asString(row.excerpt),
+    content: asString(row.content),
+    author: asString(row.author, "Tim Engineering"),
+    author_image: row.author_image ?? null,
+    category: asString(row.category),
+    tags: asStringArray(row.tags),
+    cover_image: row.cover_image ?? null,
+    published_at: asString(row.published_at) || row.created_at,
+    featured: asBoolean(row.featured),
+    read_time: asNumber(row.read_time, 5),
+    published: asBoolean(row.published),
+  };
+}
 
 function isConfigured() {
   return !!(
@@ -36,7 +106,7 @@ export async function getProjects(opts?: {
     console.error("getProjects:", error.message);
     return [];
   }
-  return (data ?? []) as ProjectRow[];
+  return ((data ?? []) as ProjectRow[]).map(normalizeProject);
 }
 
 export async function getProject(slug: string): Promise<ProjectRow | null> {
@@ -49,7 +119,7 @@ export async function getProject(slug: string): Promise<ProjectRow | null> {
     .eq("slug", slug)
     .single();
   if (error) return null;
-  return data as ProjectRow;
+  return normalizeProject(data as ProjectRow);
 }
 
 export async function upsertProject(
@@ -97,7 +167,7 @@ export async function getServices(): Promise<ServiceRow[]> {
     console.error("getServices:", error.message);
     return [];
   }
-  return (data ?? []) as ServiceRow[];
+  return ((data ?? []) as ServiceRow[]).map(normalizeService);
 }
 
 export async function getService(slug: string): Promise<ServiceRow | null> {
@@ -110,7 +180,7 @@ export async function getService(slug: string): Promise<ServiceRow | null> {
     .eq("slug", slug)
     .single();
   if (error) return null;
-  return data as ServiceRow;
+  return normalizeService(data as ServiceRow);
 }
 
 export async function upsertService(
@@ -166,7 +236,7 @@ export async function getArticles(opts?: {
     console.error("getArticles:", error.message);
     return [];
   }
-  return (data ?? []) as ArticleRow[];
+  return ((data ?? []) as ArticleRow[]).map(normalizeArticle);
 }
 
 export async function getArticle(slug: string): Promise<ArticleRow | null> {
@@ -179,7 +249,7 @@ export async function getArticle(slug: string): Promise<ArticleRow | null> {
     .eq("slug", slug)
     .single();
   if (error) return null;
-  return data as ArticleRow;
+  return normalizeArticle(data as ArticleRow);
 }
 
 export async function upsertArticle(

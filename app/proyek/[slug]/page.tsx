@@ -3,41 +3,44 @@ import { notFound } from "next/navigation";
 import { Images, MapPin, Calendar, Clock, User, Building2 } from "lucide-react";
 import { buildMetadata, siteUrl } from "@/lib/seo";
 import { getProject, getProjects } from "@/lib/db";
+import { resolveSlugParam } from "@/lib/route-params";
 import { siteConfig } from "@/data";
 import { PageHero } from "@/components/ui/PageHero";
+import { ContentRenderer } from "@/components/ui/ContentRenderer";
 import { JsonLd, breadcrumbSchema } from "@/components/ui/JsonLd";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const projects = await getProjects();
+  const projects = await getProjects().catch(() => []);
   return projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const slug = await resolveSlugParam(params);
   const project = await getProject(slug);
   if (!project) return {};
   return buildMetadata({
     title: project.title,
-    description: project.description,
+    description: project.description || project.title,
     pathSegments: ["proyek", slug],
     ogImage: project.cover_image || undefined,
   });
 }
 
 export default async function ProjectDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+  const slug = await resolveSlugParam(params);
   const project = await getProject(slug);
   if (!project) notFound();
   const base = siteUrl();
-  const url = `${base}/proyek/${slug}`;
+  const url = base ? `${base}/proyek/${slug}` : `/proyek/${slug}`;
 
   const specs = [
     { icon: MapPin, label: "Lokasi", value: project.location },
@@ -51,8 +54,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     <>
       <JsonLd
         data={breadcrumbSchema([
-          { name: "Beranda", url: `${base}/` },
-          { name: "Proyek", url: `${base}/proyek` },
+          { name: "Beranda", url: base ? `${base}/` : "/" },
+          { name: "Proyek", url: base ? `${base}/proyek` : "/proyek" },
           { name: project.title, url },
         ])}
       />
@@ -100,19 +103,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <div className="container-page grid gap-12 lg:grid-cols-3">
           <article className="prose-content lg:col-span-2">
             <h2>Tentang Proyek</h2>
-            {(project.full_description || project.description)
-              .split(/\n\s*\n/)
-              .map((para, i) =>
-                para.startsWith("## ") ? (
-                  <h2 key={i}>{para.replace(/^##\s*/, "")}</h2>
-                ) : para.startsWith("### ") ? (
-                  <h3 key={i}>{para.replace(/^###\s*/, "")}</h3>
-                ) : (
-                  <p key={i}>{para}</p>
-                ),
-              )}
+            <ContentRenderer
+              text={project.full_description || project.description}
+            />
 
-            {project.tags?.length > 0 && (
+            {project.tags.length > 0 && (
               <div className="not-prose mt-8 flex flex-wrap gap-2">
                 {project.tags.map((t) => (
                   <span
@@ -164,7 +159,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     <dd className="font-semibold text-ink">{project.diameter}</dd>
                   </div>
                 )}
-                {project.piles > 0 && (
+                {project.piles != null && project.piles > 0 && (
                   <div className="flex justify-between gap-3 py-3 last:pb-0">
                     <dt className="text-ink-subtle">Jumlah titik</dt>
                     <dd className="font-semibold text-ink">{project.piles}</dd>
@@ -176,7 +171,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {project.images?.length > 0 && (
+      {project.images.length > 0 && (
         <section className="border-t border-surface-line bg-surface-alt/60 py-16 sm:py-20">
           <div className="container-page">
             <div className="flex items-center gap-3">

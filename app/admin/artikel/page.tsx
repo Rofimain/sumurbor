@@ -54,13 +54,16 @@ export default function AdminArtikel() {
     const payload = {
       ...draft,
       slug: draft.slug || slugify(draft.title || ""),
+      content: draft.content ?? "",
+      excerpt: draft.excerpt ?? "",
+      published_at: draft.published_at || new Date().toISOString(),
       tags:
         typeof draft.tags === "string"
           ? (draft.tags as unknown as string)
               .split(",")
               .map((s) => s.trim())
               .filter(Boolean)
-          : draft.tags,
+          : draft.tags ?? [],
     };
     const res = await fetch("/api/articles", {
       method: "POST",
@@ -241,12 +244,15 @@ export default function AdminArtikel() {
                     ? new Date(draft.published_at).toISOString().slice(0, 16)
                     : ""
                 }
-                onChange={(e) =>
+                onChange={(e) => {
+                  const value = e.target.value;
                   setDraft({
                     ...draft,
-                    published_at: new Date(e.target.value).toISOString(),
-                  })
-                }
+                    published_at: value
+                      ? new Date(value).toISOString()
+                      : new Date().toISOString(),
+                  });
+                }}
               />
             </Field>
             <Field label="Estimasi waktu baca (menit)">

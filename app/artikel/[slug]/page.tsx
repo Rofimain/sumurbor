@@ -4,47 +4,52 @@ import { Calendar, Clock, User } from "lucide-react";
 import { buildMetadata, siteUrl } from "@/lib/seo";
 import { getArticle, getArticles } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
+import { resolveSlugParam } from "@/lib/route-params";
 import { siteConfig } from "@/data";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { ContentRenderer } from "@/components/ui/ContentRenderer";
 import {
   JsonLd,
   articleSchema,
   breadcrumbSchema,
 } from "@/components/ui/JsonLd";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const articles = await getArticles({ published: true });
+  const articles = await getArticles({ published: true }).catch(() => []);
   return articles.map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const slug = await resolveSlugParam(params);
   const article = await getArticle(slug);
   if (!article) return {};
   return buildMetadata({
     title: article.title,
-    description: article.excerpt,
+    description: article.excerpt || article.title,
     pathSegments: ["artikel", slug],
     ogImage: article.cover_image || undefined,
     type: "article",
-    publishedTime: article.published_at,
+    publishedTime: article.published_at || undefined,
   });
 }
 
 export default async function ArticleDetailPage({ params }: PageProps) {
-  const { slug } = await params;
+  const slug = await resolveSlugParam(params);
   const article = await getArticle(slug);
   if (!article || !article.published) notFound();
+
   const base = siteUrl();
-  const url = `${base}/artikel/${slug}`;
+  const url = base ? `${base}/artikel/${slug}` : `/artikel/${slug}`;
+  const publishedLabel = formatDate(article.published_at);
 
   return (
     <>
@@ -62,8 +67,8 @@ export default async function ArticleDetailPage({ params }: PageProps) {
       />
       <JsonLd
         data={breadcrumbSchema([
-          { name: "Beranda", url: `${base}/` },
-          { name: "Artikel", url: `${base}/artikel` },
+          { name: "Beranda", url: base ? `${base}/` : "/" },
+          { name: "Artikel", url: base ? `${base}/artikel` : "/artikel" },
           { name: article.title, url },
         ])}
       />
@@ -97,19 +102,23 @@ export default async function ArticleDetailPage({ params }: PageProps) {
               </p>
             )}
             <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-ink-subtle">
-              <span className="inline-flex items-center gap-1.5">
-                <Calendar
-                  className="h-4 w-4 text-brand-500"
-                  aria-hidden="true"
-                />
-                {formatDate(article.published_at)}
-              </span>
+              {publishedLabel && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Calendar
+                    className="h-4 w-4 text-brand-500"
+                    aria-hidden="true"
+                  />
+                  {publishedLabel}
+                </span>
+              )}
               {article.author && (
                 <>
-                  <span
-                    aria-hidden="true"
-                    className="h-1 w-1 rounded-full bg-slate-300"
-                  />
+                  {publishedLabel && (
+                    <span
+                      aria-hidden="true"
+                      className="h-1 w-1 rounded-full bg-slate-300"
+                    />
+                  )}
                   <span className="inline-flex items-center gap-1.5">
                     <User
                       className="h-4 w-4 text-brand-500"
@@ -152,43 +161,8 @@ export default async function ArticleDetailPage({ params }: PageProps) {
 
         <section className="bg-white pb-20">
           <div className="container-prose prose-content">
-            {article.content.split(/\n\s*\n/).map((para, i) => {
-              if (para.startsWith("## ")) {
-                return <h2 key={i}>{para.replace(/^##\s*/, "")}</h2>;
-              }
-              if (para.startsWith("### ")) {
-                return <h3 key={i}>{para.replace(/^###\s*/, "")}</h3>;
-              }
-              if (para.startsWith("#### ")) {
-                return <h4 key={i}>{para.replace(/^####\s*/, "")}</h4>;
-              }
-              if (para.startsWith("- ")) {
-                return (
-                  <ul key={i}>
-                    {para.split("\n").map((li, j) => (
-                      <li key={j}>{li.replace(/^-\s*/, "")}</li>
-                    ))}
-                  </ul>
-                );
-              }
-              if (/^\d+\.\s/.test(para)) {
-                return (
-                  <ol key={i}>
-                    {para.split("\n").map((li, j) => (
-                      <li key={j}>{li.replace(/^\d+\.\s*/, "")}</li>
-                    ))}
-                  </ol>
-                );
-              }
-              if (para.startsWith("> ")) {
-                return (
-                  <blockquote key={i}>{para.replace(/^>\s*/, "")}</blockquote>
-                );
-              }
-              return <p key={i}>{para}</p>;
-            })}
-
-            {article.tags?.length > 0 && (
+            <ContentRenderer text={article.content} />
+            {article.tags.length > 0 && (
               <div className="not-prose mt-12 flex flex-wrap gap-2">
                 {article.tags.map((t) => (
                   <span
@@ -206,3 +180,4 @@ export default async function ArticleDetailPage({ params }: PageProps) {
     </>
   );
 }
+

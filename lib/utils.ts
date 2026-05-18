@@ -5,20 +5,30 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: string | Date): string {
+function toValidDate(date: string | Date | null | undefined): Date | null {
+  if (date == null || date === "") return null;
+  const parsed = date instanceof Date ? date : new Date(date);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+export function formatDate(date: string | Date | null | undefined): string {
+  const parsed = toValidDate(date);
+  if (!parsed) return "";
   return new Intl.DateTimeFormat("id-ID", {
     day: "numeric",
     month: "long",
     year: "numeric",
-  }).format(new Date(date));
+  }).format(parsed);
 }
 
-export function formatDateShort(date: string | Date): string {
+export function formatDateShort(date: string | Date | null | undefined): string {
+  const parsed = toValidDate(date);
+  if (!parsed) return "";
   return new Intl.DateTimeFormat("id-ID", {
     day: "numeric",
     month: "short",
     year: "numeric",
-  }).format(new Date(date));
+  }).format(parsed);
 }
 
 export function slugify(text: string): string {
